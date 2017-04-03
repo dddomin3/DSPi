@@ -144,9 +144,15 @@ Run `raspi-config` and make Boot Options so that raspi turns on with Console (lo
 1. Move the jackboot script into `/etc/init.d/jackboot`
 2. Make it executable: `sudo chmod 755 /etc/init.d/jackboot`
 3. Copy `jackstart.sh` into `~/jackstart.sh`
+  1. Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card)
+  2. Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project.
+    - For a fact, if you're not using the UCA-222/202, you probably don't want `-S` (Force 16-bit, since UCA-222 is 16-bit)
 4. Make it executable: `sudo chmod 755 ~/jackstart.sh`
-NOTE: This is because the audio suff needs to run as the pi user, and I'm too stupid to figure ot a better way to do that...
+NOTE: This is because the audio stuff needs to run as the pi user, and I'm too stupid to figure ot a better way to do that...
 5. Register it in update-rc.d `sudo update-rc.d NameOfYourScript defaults`
+6. Run `jackstart.sh` manually, then run `qjackctl &`
+7. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa), and from system:1 to guitarix (on MIDI)
+8. Run `aj-snapshot ~/auto.snap` to generate the aj-snapshot file used in `jackstart.sh`.
 
 > If you ever want to remove the script from start-up, run the following command:
 > `sudo update-rc.d -f  NameOfYourScript remove`
