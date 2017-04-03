@@ -7,8 +7,8 @@
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Simple script to start a program at boot
-# Description:       A simple script from www.stuffaboutcode.com which will sta$
+# Short-Description: Simple script to run jackstart.sh on boot
+# Description:       This script runs jackstart.sh as pi user on boot. Also, helps kill all of the stuff that was run in jackstart.sh
 ### END INIT INFO
 
 # If you want a command to always run, put it here
@@ -18,7 +18,6 @@ case "$1" in
  start)
    echo "Starting jackboot"
    # run application you want to start
-   # exec sudo -u pi /home/pi/jackstart.sh > /home/pi/jackboot.log &&
    su pi -c /home/pi/jackstart.sh > /home/pi/jackboot.log
    exit 0
    ;;
