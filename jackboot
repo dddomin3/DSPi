@@ -1,0 +1,39 @@
+#! /bin/sh
+# /etc/init.d/jackboot
+
+### BEGIN INIT INFO
+# Provides:          jackboot
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Simple script to start a program at boot
+# Description:       A simple script from www.stuffaboutcode.com which will sta$
+### END INIT INFO
+
+# If you want a command to always run, put it here
+
+# Carry out specific functions when asked to by the system
+case "$1" in
+ start)
+   echo "Starting jackboot"
+   # run application you want to start
+   # exec sudo -u pi /home/pi/jackstart.sh > /home/pi/jackboot.log &&
+   su pi -c /home/pi/jackstart.sh > /home/pi/jackboot.log
+   exit 0
+   ;;
+ stop)
+   echo "Stopping jackboot"
+   # kill application you want to stop
+   killall jackd
+   killall guitarix
+   killall aj-snapshot
+   killall jack-dssi-host
+   ;;
+ *)
+   echo "Usage: /etc/init.d/jackboot {start|stop}"
+   exit 1
+   ;;
+esac
+
+exit 0
