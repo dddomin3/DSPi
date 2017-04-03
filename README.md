@@ -106,7 +106,7 @@ network={
 
 Install this stuff!
 ```
-sudo apt-get install jackd2 guitarix amsynth aj-snapshot jack-dssi-host dssi-jack-host
+sudo apt-get install jackd2 guitarix amsynth aj-snapshot jack-dssi-host dssi-jack-host # forgot the package name...
 ```
 Jack2 (jackd2) is audio server.
 guitarix is amp sim
@@ -126,9 +126,30 @@ This allows the dbus compiled jack server to run without a GUI running.
 
 Run `raspi-config` and make Boot Options so that raspi turns on with Console (login might be necessary as well).
 
+## Getting Music Stuff to run on boot
+1. Move the jackboot script into `/etc/init.d/jackboot`
+2. Make it executable: `sudo chmod 755 /etc/init.d/jackboot`
+3. Copy `jackstart.sh` into `~/jackstart.sh`
+4. Make it executable: `sudo chmod 755 ~/jackstart.sh`
+NOTE: This is because the audio suff needs to run as the pi user, and I'm too stupid to figure ot a better way to do that...
+5. Register it in update-rc.d `sudo update-rc.d NameOfYourScript defaults`
+
+> If you ever want to remove the script from start-up, run the following command:
+> `sudo update-rc.d -f  NameOfYourScript remove`
+
+Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
+
+
+
 ## Resources
+1. If I would choose one source, it'd be this one
 http://wiki.linuxaudio.org/wiki/raspberrypi
 
+2. Realtime kernel patching. Most of this is based on this article.
 http://www.frank-durr.de/?p=203
 
+3. Some general things you have to understand about kernel patching for raspi
 https://www.raspberrypi.org/documentation/linux/kernel/patching.md
+
+4. Running stuff on boot for RasPi
+http://www.stuffaboutcode.com/2012/06/raspberry-pi-run-program-at-start-up.html
