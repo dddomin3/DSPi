@@ -1,4 +1,18 @@
+# Introduction
+This repository is me self-documenting my journeys in using a Raspberry Pi as an integral part of my music setup. I usually make alternative/electronic/indie music without a computer, but I don't want to dismiss the benefits of having a computer in my setup. I want to be able to use:
+- VST, VSTis
+- USB MIDI Controllers
+- Guitar Amp Simulators
+- Audio Recording
+- Synthesizer Programs
+- DSP
+- Pure Data Patches/Super-Collider
+
+... without stifling my creativity through excessive use of mouse and keyboard.
+This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI controlled module that is a jack-of-all-trades in my music setup.
 # Kernel Building (Cross Compiling)
+If you want to process low-latency DSP, you're going to need a preemptable kernel... Sadly, step one is to compile a kernel... Good luck!
+
 ## Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
 ```code:bash
 cd ~
