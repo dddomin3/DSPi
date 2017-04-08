@@ -1,0 +1,7 @@
+export KERNEL_SRC=/home/cheekymusic/linux/
+export ARCH=arm
+export CROSS_COMPILE=${CCPREFIX}
+export MODULES_TEMP=/home/cheekymusic/modules/
+export CCPREFIX=/home/cheekymusic/tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
+export KERNEL=kernel7
+export INSTALL_MOD_PATH=/home/cheekymusic/rtkernel/
