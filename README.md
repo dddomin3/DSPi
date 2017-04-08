@@ -102,7 +102,7 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0
 ## Making your new pi experience better:
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
-Add the follow to auto-connect to your networks
+`sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
 ```
 network={
         ssid="SSID_AMAZING_2.4"
@@ -119,14 +119,13 @@ network={
 ## Installing music stuff and configuring it
 
 Install this stuff!
-```
-sudo apt-get install jackd2 guitarix amsynth aj-snapshot jack-dssi-host dssi-jack-host # forgot the package name...
-```
-Jack2 (jackd2) is audio server.
-guitarix is amp sim
-amsynth is synth
-aj-snapshot is the audio/midi auto connection daemon
-jack-dssi-host is a dssi host, which can do things like host synths, host VSTs, etc.
+`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot jack-dssi-host dssi-jack-host # forgot the package name...`
+- Jack2 (jackd2) is audio server
+- qjackctl is the GUI to manage jackd2 server
+- guitarix is amp sim
+- amsynth is synth
+- aj-snapshot is the audio/midi auto connection daemon
+- jack-dssi-host is a dssi host, which can do things like host synths, host VSTs, etc.
 
 And then add the following lines to /etc/dbus-1/system.conf:
 
@@ -145,17 +144,17 @@ Run `raspi-config` and make Boot Options so that raspi turns on with Console (lo
 2. Make it executable: `sudo chmod 755 /etc/init.d/jackboot`
 3. Copy `jackstart.sh` into `~/jackstart.sh`
   - Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card)
-  - Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project.
+  - Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project. You can use qjackctl to help fine-tune settings without busting a blood vessel in your forehead.
   - For a fact, if you're not using the UCA-222/202, you probably don't want `-S` (Force 16-bit, since UCA-222 is 16-bit)
 4. Make it executable: `sudo chmod 755 ~/jackstart.sh`
 NOTE: This is because the audio stuff needs to run as the pi user, and I'm too stupid to figure ot a better way to do that...
-5. Register it in update-rc.d `sudo update-rc.d NameOfYourScript defaults`
+5. Register it in update-rc.d `sudo update-rc.d jackboot defaults`
 6. Run `jackstart.sh` manually, then run `qjackctl &`
 7. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa), and from system:1 to guitarix (on MIDI)
 8. Run `aj-snapshot ~/auto.snap` to generate the aj-snapshot file used in `jackstart.sh`.
 
 > If you ever want to remove the script from start-up, run the following command:
-> `sudo update-rc.d -f  NameOfYourScript remove`
+> `sudo update-rc.d -f  jackboot remove`
 
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
