@@ -119,13 +119,13 @@ network={
 ## Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot jack-dssi-host dssi-jack-host # forgot the package name...`
+`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot dssi-host-jack`
 - Jack2 (jackd2) is audio server
 - qjackctl is the GUI to manage jackd2 server
 - guitarix is amp sim
 - amsynth is synth
 - aj-snapshot is the audio/midi auto connection daemon
-- jack-dssi-host is a dssi host, which can do things like host synths, host VSTs, etc.
+- dssi-host-jack is a dssi host, which can do things like host synths, host VSTs, etc.
 
 And then add the following lines to /etc/dbus-1/system.conf:
 
