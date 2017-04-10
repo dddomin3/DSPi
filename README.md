@@ -119,13 +119,11 @@ network={
 ## Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot dssi-host-jack puredata`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata`
 - Jack2 (jackd2) is audio server
 - qjackctl is the GUI to manage jackd2 server
 - guitarix is amp sim
-- amsynth is synth
 - aj-snapshot is the audio/midi auto connection daemon
-- dssi-host-jack is a dssi host, which can do things like host synths, host VSTs, etc.
 
 And then add the following lines to /etc/dbus-1/system.conf:
 
@@ -138,6 +136,10 @@ And then add the following lines to /etc/dbus-1/system.conf:
 This allows the dbus compiled jack server to run without a GUI running.
 
 Run `raspi-config` and make Boot Options so that raspi turns on with Console (login might be necessary as well).
+
+## amSynth building from source.
+Build amSynth on your raspi using the instructions below. It's braindead simple to do.
+https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 
 ## Getting Music Stuff to run on boot
 1. Move the jackboot script into `/etc/init.d/jackboot`
@@ -163,10 +165,6 @@ jackstart.sh starts a puredata script which assists in switching which dsp is cu
 0: Runs guitarix
 64: Runs amsynth in jack-dssi-host
 127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
-
-## amSynth building from source.
-Build amSynth on your raspi using the instructions below. It's braindead simple to do.
-https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 
 ## TODO: Run amSynth using native nogui option
 

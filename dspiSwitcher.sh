@@ -1,7 +1,7 @@
 #!/bin/bash
 echo $dspi
 [ $dspi == 'guitarix' ] && (
-  killall jack-dssi-host
+  killall amsynth
   killall jack-rack
   killall guitarix
   sleep 10
@@ -12,15 +12,15 @@ echo $dspi
 [ $dspi == 'amsynth' ] && (
   killall guitarix
   killall jack-rack
-  killall jack-dssi-host
+  killall amsynth
   sleep 10
-  jack-dssi-host /usr/lib/dssi/amsynth_dssi.so -n >> /home/pi/DSPi/jackboot.log &
+  amsynth -x -c9 -p4 >> /home/pi/DSPi/jackboot.log &
   echo "wubwubwub"
   exit 0;
 )
 [ $dspi == 'sidechain' ] && (
   killall guitarix
-  killall jack-dssi-host
+  killall amsynth
   killall jack-rack
   sleep 10
   jack-rack --help >> /home/pi/DSPi/jackboot.log &
