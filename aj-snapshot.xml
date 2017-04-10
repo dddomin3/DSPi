@@ -11,7 +11,7 @@
     <port id="0">
       <connection client="amsynth DSSI plugin" port="0" />
       <connection client="Midi Through" port="0" />
-      <connection client="Pure-Data" port="0" />
+      <connection client="Pure Data" port="0" />
     </port>
   </client>
   <client name="jack_midi" />
