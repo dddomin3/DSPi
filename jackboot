@@ -18,7 +18,7 @@ case "$1" in
  start)
    echo "Starting jackboot"
    # run application you want to start
-   su pi -c /home/pi/jackstart.sh > /home/pi/jackboot.log
+   su pi -c /home/pi/DSPi/jackstart.sh > /home/pi/DSPi/jackboot.log
    exit 0
    ;;
  stop)
