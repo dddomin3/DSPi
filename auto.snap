@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<alsa>
+  <client name="System">
+    <port id="0" />
+    <port id="1" />
+  </client>
+  <client name="Midi Through">
+    <port id="0" />
+  </client>
+  <client name="CH345">
+    <port id="0">
+      <connection client="amsynth DSSI plugin" port="0" />
+      <connection client="Midi Through" port="0" />
+      <connection client="Pure-Data" port="0" />
+    </port>
+  </client>
+  <client name="jack_midi" />
+  <client name="amsynth DSSI plugin" />
+  <client name="aj-snapshot" />
+  <client name="Client-131" />
+</alsa>
+<jack>
+  <client name="system">
+    <port name="capture_1">
+      <connection port="gx_head_amp:in_0" />
+    </port>
+    <port name="capture_2">
+      <connection port="system:playback_2" />
+    </port>
+    <port name="midi_capture_1">
+      <connection port="gx_head_amp:midi_in_1" />
+    </port>
+  </client>
+  <client name="amsynth DSSI plugin">
+    <port name="amsynth DSSI plugin out_1">
+      <connection port="system:playback_1" />
+    </port>
+    <port name="amsynth DSSI plugin out_2">
+      <connection port="system:playback_2" />
+    </port>
+  </client>
+  <client name="gx_head_amp">
+    <port name="out_0">
+      <connection port="gx_head_fx:in_0" />
+    </port>
+  </client>
+  <client name="gx_head_fx">
+    <port name="out_0">
+      <connection port="system:playback_1" />
+    </port>
+    <port name="out_1">
+      <connection port="system:playback_2" />
+    </port>
+  </client>
+</jack>
