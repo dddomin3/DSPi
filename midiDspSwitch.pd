@@ -30,9 +30,9 @@
 #X obj 175 81 select 0 64 127;
 #X msg 931 270 64, f 2;
 #X msg 938 301 127, f 4;
-#X msg 258 215 dspi=amsynth ~/DSPi/dspiSwitcher.sh;
-#X msg 495 246 dspi=sidechain ~/DSPi/dspiSwitcher.sh;
-#X msg 29 150 dspi=guitarix ~/DSPi/dspiSwitcher.sh;
+#X msg 258 215 dspi=amsynth /home/pi/DSPi/dspiSwitcher.sh;
+#X msg 495 246 dspi=sidechain /home/pi/DSPi/dspiSwitcher.sh;
+#X msg 29 150 dspi=guitarix /home/pi/DSPi/dspiSwitcher.sh;
 #X obj 488 21 loadbang;
 #X msg 518 104 \; pd dsp 1;
 #X obj 522 59 delay 10000;
