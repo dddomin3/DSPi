@@ -5,7 +5,7 @@ echo $dspi
   killall jack-rack
   killall guitarix
   sleep 10
-  guitarix --nogui > jackboot.log &
+  guitarix --nogui > /home/pi/DSPi/jackboot.log &
   echo "nernerner"
   exit 0;
 )
@@ -14,7 +14,7 @@ echo $dspi
   killall jack-rack
   killall jack-dssi-host
   sleep 10
-  jack-dssi-host /usr/lib/dssi/amsynth_dssi.so -n > jackboot.log &
+  jack-dssi-host /usr/lib/dssi/amsynth_dssi.so -n > /home/pi/DSPi/jackboot.log &
   echo "wubwubwub"
   exit 0;
 )
@@ -23,7 +23,7 @@ echo $dspi
   killall jack-dssi-host
   killall jack-rack
   sleep 10
-  jack-rack --help > jackboot.log &
+  jack-rack --help > /hoe/pi/DSPi/jackboot.log &
   echo "unAunAunA"
   exit 0;
 )
