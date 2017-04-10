@@ -23,7 +23,7 @@ echo $dspi
   killall jack-dssi-host
   killall jack-rack
   sleep 10
-  jack-rack --help > jackboot.log &
+  jack-rack --help > /home/pi/DSPi/jackboot.log &
   echo "unAunAunA"
   exit 0;
 )
