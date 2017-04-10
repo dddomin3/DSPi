@@ -119,7 +119,7 @@ network={
 ## Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot dssi-host-jack`
+`sudo apt-get install qjackctl jackd2 guitarix amsynth aj-snapshot dssi-host-jack puredata`
 - Jack2 (jackd2) is audio server
 - qjackctl is the GUI to manage jackd2 server
 - guitarix is amp sim
@@ -158,7 +158,8 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I'm too s
 
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
-
+## TODO: Talk about pure data
+## TODO: Talk about building amsynth for features
 
 ## Resources
 1. If I would choose one source, it'd be this one
