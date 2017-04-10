@@ -7,6 +7,12 @@
   <client name="Midi Through">
     <port id="0" />
   </client>
+  <client name="Arturia BeatStep">
+    <port id="0">
+      <connection client="Pure Data" port="0" />
+      <connection client="Midi Through" port="0" />
+    </port>
+  </client>
   <client name="CH345">
     <port id="0">
       <connection client="Midi Through" port="0" />
