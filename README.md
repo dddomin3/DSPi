@@ -151,15 +151,24 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I'm too s
 5. Register it in update-rc.d `sudo update-rc.d jackboot defaults`
 6. Run `jackstart.sh` manually, then run `qjackctl &`
 7. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa), and from system:1 to guitarix (on MIDI)
-8. Run `aj-snapshot ~/DSPi/auto.snap` to generate the aj-snapshot file used in `jackstart.sh`.
+8. Run `aj-snapshot ~/DSPi/aj-snapshot.xml` to generate the aj-snapshot file used in `jackstart.sh`.
 
 > If you ever want to remove the script from start-up, run the following command:
 > `sudo update-rc.d -f  jackboot remove`
 
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
-## TODO: Talk about pure data
-## TODO: Talk about building amsynth for features
+## Pure Data
+jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, adn others will be killed:
+0: Runs guitarix
+64: Runs amsynth in jack-dssi-host
+127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
+
+## amSynth building from source.
+Build amSynth on your raspi using the instructions below. It's braindead simple to do.
+https://github.com/amsynth/amsynth/wiki/BuildingFromSource
+
+## TODO: Run amSynth using native nogui option
 
 ## Resources
 1. If I would choose one source, it'd be this one
