@@ -161,12 +161,23 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I'm too s
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
 ## Pure Data
-jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, adn others will be killed:
+jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, and others will be killed:
 0: Runs guitarix
-64: Runs amsynth in jack-dssi-host
+64: Runs amsynth
 127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
 
-## TODO: Run amSynth using native nogui option
+## Run amSynth using native nogui option
+Note: As of this commit, amsynth on the raspian repos do not support this option. You must compile amSynth on the raspi to get these capabilities.
+https://github.com/amsynth/amsynth/wiki/BuildingFromSource
+REALLY easy to do, actually. VERY well documented.
+
+`amsynth -x -mjack -ajack -c9 -p4`
+
+- -x is no gui
+- -mjack forces jack midi
+- -ajack forces jack audio
+- -c9 makes amSynth respond to midi channel 9
+- -p4 is max of 4 notes of polyphony
 
 ## Resources
 1. If I would choose one source, it'd be this one

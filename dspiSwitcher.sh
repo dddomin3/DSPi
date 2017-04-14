@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $dspi
 [ $dspi == 'guitarix' ] && (
   killall amsynth
   killall jack-rack
