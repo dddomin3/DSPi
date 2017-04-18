@@ -1,0 +1,9 @@
+midi_driver	jack
+oss_midi_device	/dev/midi
+midi_channel	9
+audio_driver	auto
+oss_audio_device	/dev/dsp
+alsa_audio_device	jack
+sample_rate	48000
+polyphony	4
+pitch_bend_range	2

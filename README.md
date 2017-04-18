@@ -179,6 +179,8 @@ REALLY easy to do, actually. VERY well documented.
 - -c9 makes amSynth respond to midi channel 9
 - -p4 is max of 4 notes of polyphony
 
+Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
+
 ## Resources
 1. If I would choose one source, it'd be this one
 http://wiki.linuxaudio.org/wiki/raspberrypi
