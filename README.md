@@ -90,15 +90,15 @@ grab this firmware if you want wifi (Pi 3 Model B):
 https://github.com/RPi-Distro/firmware-nonfree/tree/master/brcm80211
 and copy it into `$INSTALL_MOD_PATHlib/firmware`
 
-Then run `./installkernel` with your sd card mounted.
+Then run `./installkernel.sh` with your sd card mounted.
 
 Try append these to `/boot/cmdline.txt` if you run into issues:
 ```
-dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0
+dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 ```
 `sdhci_bcm2708.enable_llm=0` disables low latency mode for sd card
 `dwc_otg.speed=1` Forces the USB controller to use 1.1 mode (since the USB 2.0 controller on the pi may cause issues with some audio interfaces)
-
+`smsc95xx.turbo_mode=N` Disable the turbo mode for the ethernet controller
 ## Making your new pi experience better:
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
@@ -135,7 +135,9 @@ And then add the following lines to /etc/dbus-1/system.conf:
 
 This allows the dbus compiled jack server to run without a GUI running.
 
-Run `raspi-config` and make Boot Options so that raspi turns on with Console (login might be necessary as well).
+Run `raspi-config`:
+  - Alter Boot Options so that raspi turns on with Console with auto-login (Boot Options -> B1 -> B2).
+  - Set the GPU Memory to 16 under "Advanced Options -> A3"
 
 ## amSynth building from source.
 Build amSynth on your raspi using the instructions below. It's braindead simple to do.
@@ -171,13 +173,14 @@ Note: As of this commit, amsynth on the raspian repos do not support this option
 https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 REALLY easy to do, actually. VERY well documented.
 
-`amsynth -x -mjack -ajack -c9 -p4`
+`amsynth -x -mjack -ajack -r48000 -c9 -p4`
 
 - -x is no gui
 - -mjack forces jack midi
 - -ajack forces jack audio
 - -c9 makes amSynth respond to midi channel 9
 - -p4 is max of 4 notes of polyphony
+- -r48000 runs amSynth at 48000 sample rate
 
 Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
 
