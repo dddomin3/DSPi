@@ -10,10 +10,44 @@ This repository is me self-documenting my journeys in using a Raspberry Pi as an
 
 ... without stifling my creativity through excessive use of mouse and keyboard.
 This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI controlled module that is a jack-of-all-trades in my music setup.
-# Kernel Building (Cross Compiling)
-If you want to process low-latency DSP, you're going to need a preemptable kernel... Sadly, step one is to compile a kernel... Good luck!
+# **I:** Installing Raspian
+## **I_1:_** Download Raspian Lite
+https://www.raspberrypi.org/downloads/raspbian/
+Lite, since you want a minimal os with no gui, really.
+## **I_2:_** Par`dd`y time: Using dd to back up and install Raspian
+I use dd, and a sd card reader to manage my raspi sd card. /dev/mmcblk0 is where my sdcard mounts. Correct the below to correspond! Unmount your sdcard, but leave it plugged in. Makes this happen easier.
 
-## Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
+`sudo dd bs=4M if=/dev/mmcblk0 of=from-sd-card.img status=progress`
+
+Backs up your SD card to a file called `from-sd-card.img`
+
+`sudo dd bs=4M if=2017-04-10-raspbian-jessie-lite.img of=/dev/mmcblk0 status=progress && sync`
+
+Installs Raspian to your sd card.
+
+Feel free to use NOOBS or whatever way you install raspbian. This is just what i do! :)
+
+## **I_3:_** Making your new pi experience better:
+`touch /media/cheekymusic/boot/ssh` enables ssh
+
+`sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
+```
+network={
+        ssid="SSID_AMAZING_2.4"
+        psk="fourwordsallcapswithspaces"
+}
+
+network={
+        ssid="CheekyMusicWifi"
+        psk="PASSKEY"
+        key_mgmt=WPA-PSK
+}
+```
+
+# **II:** Kernel Building (Cross Compiling)
+If you want to process low-latency DSPi, you're going to need a pre-emptable kernel... Sadly, step one is to compile a kernel... Good luck!
+
+## **II_1:_** Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
 ```code:bash
 cd ~
 git clone https://github.com/raspberrypi/tools.git
@@ -22,21 +56,22 @@ cd linux/
 make clean
 git clean -f
 git reset --hard
+git checkout raspberrypi-kernel_1.20170303-1
 ```
 Make sure, by the way, to check out a commit/release where the kernel version matches (look below for patches, etc)
 Check this file (and similar commits) for the kernel version. This usually happens after a release and whatnot.
-https://github.com/raspberrypi/linux/commit/702c0ce9a7c7ad1b22883aa82d8c29eaa6e65aab
+https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170303-1
 
-## Grab Kernel Patch
+## **II_2:_** Grab Kernel Patch
 ```
-cd ~
+cd ~/linux
 wget https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/[*.patch.gz] # Replace with patch matching the kernel you grabbed from kernel repo
 zcat [patch.file.patch.gz] | patch -p1
 ```
 
-## Grab configs from raspi
+## **II_3:_** Grab configs from raspi
 ```
-scp pi@ip.address.of.pi :/proc/config.gz
+scp pi@ip.address.of.pi:/proc/config.gz
 zcat config.gz > .config
 # or grab it from the sd card
 
@@ -46,7 +81,7 @@ make menuconfig #Need a large terminal
 # CPU Power Management > Frequency Scaling > Performance
 ```
 
-## One last step before building the kernel--Mis en place
+## **II_4:_** One last step before building the kernel--Mis en place
 Plug in your Raspian SD card (should definitely work for other distros). Note how it mounts. You really just need to find the `/boot` and `/lib` directories.
 ```
 sudo apt-get install git build-essential make lzop ncurses-dev gcc-arm-linux-gnuebi fakeroot kernel-package dev-essential
@@ -68,22 +103,24 @@ Aside: MODULES_TEMP might not be used...
 ### installkernel.sh
 ```
 sudo rm -r /media/cheekymusic/boot/overlays/
-sudo rm -r /media/cheekymusic/7f593562-9f68-4bb9-a7c9-2b70ad620873/lib/firmware/
+sudo rm -r /media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/lib/firmware/
 cd ~/rtkernel/boot
 sudo cp -rd * /media/cheekymusic/boot/
 cd ../lib
-sudo cp -dr * /media/cheekymusic/7f593562-9f68-4bb9-a7c9-2b70ad620873/lib/
+sudo cp -dr * /media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/lib/
 ```
 /media/cheekymusic is where the sd card was mounted
 
 Aside: Do you really need to delete the firmware here?
 
-## Building kernel
+## **II_5:_** Building kernel
 ```
 source kernel.source
 cd ~/linux
 make zImage modules dtbs -j4 # -j#, where # is CPU cores * 1.5 (of your compiling machine)
 make modules_install -j4
+mkdir ~/$INSTALL_MOD_PATH/boot/
+./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
 ```
 
 grab this firmware if you want wifi (Pi 3 Model B):
@@ -99,33 +136,19 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 `sdhci_bcm2708.enable_llm=0` disables low latency mode for sd card
 `dwc_otg.speed=1` Forces the USB controller to use 1.1 mode (since the USB 2.0 controller on the pi may cause issues with some audio interfaces)
 `smsc95xx.turbo_mode=N` Disable the turbo mode for the ethernet controller
-## Making your new pi experience better:
-`touch /media/cheekymusic/boot/ssh` enables ssh
 
-`sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
-```
-network={
-        ssid="SSID_AMAZING_2.4"
-        psk="fourwordsallcapswithspaces"
-}
-
-network={
-        ssid="CheekyMusicWifi"
-        psk="PASSKEY"
-        key_mgmt=WPA-PSK
-}
-```
-
-## Installing music stuff and configuring it
+## **II_6:_** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git`
 - Jack2 (jackd2) is audio server
 - qjackctl is the GUI to manage jackd2 server
 - guitarix is amp sim
 - aj-snapshot is the audio/midi auto connection daemon
+- git to download this repo
 
-And then add the following lines to /etc/dbus-1/system.conf:
+Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
+And then add the following lines to /etc/dbus-1/system.conf: (INSIDE <busconfig> tags!)
 
 ```
  <policy user="pi">
@@ -139,19 +162,20 @@ Run `raspi-config`:
   - Alter Boot Options so that raspi turns on with Console with auto-login (Boot Options -> B1 -> B2).
   - Set the GPU Memory to 16 under "Advanced Options -> A3"
 
-## amSynth building from source.
+## **II_7:_** amSynth building from source.
 Build amSynth on your raspi using the instructions below. It's braindead simple to do.
 https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 
-## Getting Music Stuff to run on boot
-1. Move the jackboot script into `/etc/init.d/jackboot`
-2. Make it executable: `sudo chmod 755 /etc/init.d/jackboot`
-3. Copy `jackstart.sh` into `~/DSPi/jackstart.sh`
+## **II_8:_** Getting Music Stuff to run on boot
+0. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi`
+1. Move the jackboot script into init.d: `cp ~/DSPi/jackboot /etc/init.d/jackboot`
+2. Make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
+3. Edit `~/DSPi/jackstart.sh`
   - Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card)
   - Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project. You can use qjackctl to help fine-tune settings without busting a blood vessel in your forehead.
   - For a fact, if you're not using the UCA-222/202, you probably don't want `-S` (Force 16-bit, since UCA-222 is 16-bit)
-4. Make it executable: `sudo chmod 755 ~/DSPi/jackstart.sh`
-NOTE: This is because the audio stuff needs to run as the pi user, and I'm too stupid to figure ot a better way to do that...
+4. Make sure it's executable: `sudo chmod 755 ~/DSPi/jackstart.sh`
+NOTE: This is because the audio stuff needs to run as the pi user, and I can't figure to a better way to do that...
 5. Register it in update-rc.d `sudo update-rc.d jackboot defaults`
 6. Run `jackstart.sh` manually, then run `qjackctl &`
 7. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa), and from system:1 to guitarix (on MIDI)
@@ -162,13 +186,13 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I'm too s
 
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
-## Pure Data
+## **II_9:_** Pure Data
 jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, and others will be killed:
 0: Runs guitarix
 64: Runs amsynth
 127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
 
-## Run amSynth using native nogui option
+## **II_10:_** Run amSynth using native nogui option
 Note: As of this commit, amsynth on the raspian repos do not support this option. You must compile amSynth on the raspi to get these capabilities.
 https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 REALLY easy to do, actually. VERY well documented.
@@ -184,7 +208,7 @@ REALLY easy to do, actually. VERY well documented.
 
 Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
 
-## Resources
+# **i** Resources
 1. If I would choose one source, it'd be this one
 http://wiki.linuxaudio.org/wiki/raspberrypi
 
