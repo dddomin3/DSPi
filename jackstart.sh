@@ -5,7 +5,7 @@ sudo killall gvfsd
 sudo killall dbus-daemon
 sudo killall dbus-launch
 cd /home/pi/DSPi
-jackd -P70 -p16 -t2000 -d alsa -dhw:CODEC -p 128 -n 3 -r 48000 -S -s -Xseq &
+jackd -P70 -p16 -t2000 -d alsa -dhw:CODEC -p 128 -n 3 -r 44100 -S -s -Xseq &
 sleep 15
 guitarix --nogui &
 sleep 15
