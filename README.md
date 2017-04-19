@@ -140,7 +140,7 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 ## **II_6:_** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
 - Jack2 (jackd2) is audio server
 - qjackctl is the GUI to manage jackd2 server
 - guitarix is amp sim

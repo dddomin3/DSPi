@@ -10,5 +10,5 @@ sleep 15
 guitarix --nogui &
 sleep 15
 aj-snapshot -d aj-snapshot.xml &
-pd -alsamidi -nrt -nogui -noaudio -nomidiout midiDspSwitch.pd &
+pd -alsamidi -midiindev 1 -nomidiout -nrt -nogui -noaudio midiDspSwitch.pd &
 exit 0
