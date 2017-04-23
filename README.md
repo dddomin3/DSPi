@@ -146,7 +146,7 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git jack-rack pd-ggee`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
@@ -177,10 +177,10 @@ Build amSynth on your raspi using the instructions below. It's braindead simple 
 
 ### **II8:** Getting Music Stuff to run on boot
 
-1. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi`
-1. Move the jackboot script into init.d: `cp ~/DSPi/jackboot /etc/init.d/jackboot`
-1. Make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
-1. Edit `~/DSPi/jackstart.sh`
+1. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi` <br/>
+  Cloning this repo into ~/DSPi allows me to `git pull` to get any updates, since jackboot points at `~/DSPi/jackstart.sh`. Hopefully you can do the same!
+1. Move the jackboot script into init.d: `cp ~/DSPi/jackboot /etc/init.d/jackboot` and make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
+1. Edit `~/DSPi/jackstart.sh` <br/>
   Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card) <br/>
   Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project. You can use qjackctl to help fine-tune settings without busting a blood vessel in your forehead. <br/>
   For a fact, if you're not using the UCA-222/202, you probably don't want `-S` (Force 16-bit, since UCA-222 is 16-bit) <br/>
@@ -188,13 +188,15 @@ Build amSynth on your raspi using the instructions below. It's braindead simple 
 NOTE: This is because the audio stuff needs to run as the pi user, and I can't figure to a better way to do that...
 1. Register it in update-rc.d `sudo update-rc.d jackboot defaults`
 1. Run `jackstart.sh` manually, then run `qjackctl &`
-1. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa), and from system:1 to guitarix (on MIDI)
+1. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa tab), and from system:1 to guitarix (on MIDI tab), `amsynth` and `jack-rack`. Using the `seq` drivers midi-through allows for easy modification of your midi-autoconnection schema. Most of the time, I just add another connection by hand (once I know the name of the controller in alsa) in the `aj-snapshot.xml`.
 1. Run `aj-snapshot ~/DSPi/aj-snapshot.xml` to generate the aj-snapshot file used in `jackstart.sh`.
+1. `touch jackboot.log` if you want to have user access to the logs. Otherwise, `root` creates the logs, and you'll need to sudo to access them.
 
 > If you ever want to remove the script from start-up, run the following command:
 > `sudo update-rc.d -f  jackboot remove`
 
-Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
+`/etc/init.d` instructions paraphrased from resource \#4.
+`jackstart.sh` based on resource \#5.
 
 ### **II9:** Pure Data
 
@@ -226,3 +228,4 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 1. Realtime kernel patching. Most of this is based on this article: <http://www.frank-durr.de/?p=203>
 1. Some general things you have to understand about kernel patching for raspi: <https://www.raspberrypi.org/documentation/linux/kernel/patching.md>
 1. Running stuff on boot for RasPi: <http://www.stuffaboutcode.com/2012/06/raspberry-pi-run-program-at-start-up.html>
+1. Script for running jack gui-less, and disabling other unneccesary services: <https://github.com/autostatic/scripts/blob/rpi/jackstart>
