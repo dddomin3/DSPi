@@ -11,10 +11,10 @@ This repository is me self-documenting my journeys in using a Raspberry Pi as an
 ... without stifling my creativity through excessive use of mouse and keyboard.
 This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI controlled module that is a jack-of-all-trades in my music setup.
 # **I:** Installing Raspian
-## **I_1:_** Download Raspian Lite
+## **I1:** Download Raspian Lite
 https://www.raspberrypi.org/downloads/raspbian/
 Lite, since you want a minimal os with no gui, really.
-## **I_2:_** Par`dd`y time: Using dd to back up and install Raspian
+## **I2:** Par`dd`y time: Using dd to back up and install Raspian
 I use dd, and a sd card reader to manage my raspi sd card. /dev/mmcblk0 is where my sdcard mounts. Correct the below to correspond! Unmount your sdcard, but leave it plugged in. Makes this happen easier.
 
 `sudo dd bs=4M if=/dev/mmcblk0 of=from-sd-card.img status=progress`
@@ -27,7 +27,7 @@ Installs Raspian to your sd card.
 
 Feel free to use NOOBS or whatever way you install raspbian. This is just what i do! :)
 
-## **I_3:_** Making your new pi experience better:
+## **I3:** Making your new pi experience better:
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
 `sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
@@ -47,7 +47,7 @@ network={
 # **II:** Kernel Building (Cross Compiling)
 If you want to process low-latency DSPi, you're going to need a pre-emptable kernel... Sadly, step one is to compile a kernel... Good luck!
 
-## **II_1:_** Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
+## **II1:** Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
 ```code:bash
 cd ~
 git clone https://github.com/raspberrypi/tools.git
@@ -62,14 +62,14 @@ Make sure, by the way, to check out a commit/release where the kernel version ma
 Check this file (and similar commits) for the kernel version. This usually happens after a release and whatnot.
 https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170303-1
 
-## **II_2:_** Grab Kernel Patch
+## **II2:** Grab Kernel Patch
 ```
 cd ~/linux
 wget https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/[*.patch.gz] # Replace with patch matching the kernel you grabbed from kernel repo
 zcat [patch.file.patch.gz] | patch -p1
 ```
 
-## **II_3:_** Grab configs from raspi
+## **II3:** Grab configs from raspi
 ```
 scp pi@ip.address.of.pi:/proc/config.gz
 zcat config.gz > .config
@@ -81,7 +81,7 @@ make menuconfig #Need a large terminal
 # CPU Power Management > Frequency Scaling > Performance
 ```
 
-## **II_4:_** One last step before building the kernel--Mis en place
+## **II4:** One last step before building the kernel--Mis en place
 Plug in your Raspian SD card (should definitely work for other distros). Note how it mounts. You really just need to find the `/boot` and `/lib` directories.
 ```
 sudo apt-get install git build-essential make lzop ncurses-dev gcc-arm-linux-gnuebi fakeroot kernel-package dev-essential
@@ -113,7 +113,7 @@ sudo cp -dr * /media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/lib/
 
 Aside: Do you really need to delete the firmware here?
 
-## **II_5:_** Building kernel
+## **II5:** Building kernel
 ```
 source kernel.source
 cd ~/linux
@@ -137,7 +137,7 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 `dwc_otg.speed=1` Forces the USB controller to use 1.1 mode (since the USB 2.0 controller on the pi may cause issues with some audio interfaces)
 `smsc95xx.turbo_mode=N` Disable the turbo mode for the ethernet controller
 
-## **II_6:_** Installing music stuff and configuring it
+## **II6:** Installing music stuff and configuring it
 
 Install this stuff!
 `sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
@@ -162,11 +162,11 @@ Run `raspi-config`:
   - Alter Boot Options so that raspi turns on with Console with auto-login (Boot Options -> B1 -> B2).
   - Set the GPU Memory to 16 under "Advanced Options -> A3"
 
-## **II_7:_** amSynth building from source.
+## **II7:** amSynth building from source.
 Build amSynth on your raspi using the instructions below. It's braindead simple to do.
 https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 
-## **II_8:_** Getting Music Stuff to run on boot
+## **II8:** Getting Music Stuff to run on boot
 0. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi`
 1. Move the jackboot script into init.d: `cp ~/DSPi/jackboot /etc/init.d/jackboot`
 2. Make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
@@ -186,13 +186,13 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I can't f
 
 Paraphrased from resource \#4, except for the jackstart part (for obvious reasons).
 
-## **II_9:_** Pure Data
+## **II9:** Pure Data
 jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, and others will be killed:
 0: Runs guitarix
 64: Runs amsynth
 127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
 
-## **II_10:_** Run amSynth using native nogui option
+## **II10:** Run amSynth using native nogui option
 Note: As of this commit, amsynth on the raspian repos do not support this option. You must compile amSynth on the raspi to get these capabilities.
 https://github.com/amsynth/amsynth/wiki/BuildingFromSource
 REALLY easy to do, actually. VERY well documented.
