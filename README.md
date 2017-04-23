@@ -1,7 +1,5 @@
 # DSPi: An Audio Raspberry Pi Audio module/journey
 
-## Introduction
-
 This repository is me self-documenting my journeys in using a Raspberry Pi as an integral part of my music setup. I usually make alternative/electronic/indie music without a computer, but I don't want to dismiss the benefits of having a computer in my setup. I want to be able to use:
 
 - VST, VSTis
