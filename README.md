@@ -55,7 +55,7 @@ network={
 
 ## **II:** Kernel Building (Cross Compiling)
 
-If you want to process low-latency DSPi, you're going to need a pre-emptable kernel... Sadly, step one is to compile a kernel... Good luck!
+If you want to process low-latency DSPi, you're going to need a pre-emptable kernel... Sadly, step one is to compile a kernel... Good luck! These instructions are for cross compilation on a linux system (Ubuntu Studio) but should definitely work for other debian-based OS's. I also happen to have an SD card port, which definitely eases Raspberry Pi setup.
 
 ### **II1:** Cleaning your kernel dir (Or grabbing a new one it if you're starting from scratch)
 
@@ -72,7 +72,7 @@ git checkout raspberrypi-kernel_1.20170303-1
 
 Make sure, by the way, to check out a commit/release where the kernel version matches (look below for patches, etc)
 Check this file (and similar commits) for the kernel version. This usually happens after a release and whatnot.
-https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170303-1
+<https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170303-1>
 
 ### **II2:** Grab Kernel Patch
 
@@ -81,6 +81,8 @@ cd ~/linux
 wget https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/[*.patch.gz] # Replace with patch matching the kernel you grabbed from kernel repo
 zcat [patch.file.patch.gz] | patch -p1
 ```
+
+Make sure the kernel patch matches the kernel version in the previous step EXACTLY! I've made this mistake, and it prevents the pi from booting. YMMV.
 
 ### **II3:** Grab configs from raspi
 
@@ -95,19 +97,24 @@ make menuconfig #Need a large terminal
 # CPU Power Management > Frequency Scaling > Performance
 ```
 
+`make menuconfig` may fail if your terminal isn't maximized.
+
 ### **II4:** One last step before building the kernel--Mis en place
 
 Plug in your Raspian SD card (should definitely work for other distros). Note how it mounts. You really just need to find the `/boot` and `/lib` directories.
+
 ```bash
 sudo apt-get install git build-essential make lzop ncurses-dev gcc-arm-linux-gnuebi fakeroot kernel-package dev-essential
 # Not sure if we need all of them
 ```
 
+`sudo yum install #...` may work for non-debian systems. The only things that may differ are `build-essential` and `dev-essential`.
+
 Edit installkernal.sh and kernel.source to match the directories for your system.
-Note: /media/cheekymusic is where the sd card was mounted
+Note: `/media/cheekymusic` is where the sd card was mounted. `/home/cheekymusic === ~` 
 `chmod 755 installkernel.sh` so you can execute it.
 
-Aside: Do you really need to delete the firmware here?
+TODO: Figure out if we really need to delete the firmware here.
 
 ### **II5:** Building kernel
 
@@ -141,10 +148,10 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 Install this stuff!
 `sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
 
-- Jack2 (jackd2) is audio server
-- qjackctl is the GUI to manage jackd2 server
-- guitarix is amp sim
-- aj-snapshot is the audio/midi auto connection daemon
+- Jackd2 (jackd2) is audio server
+- qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
+- guitarix is a guitar amp simulator
+- aj-snapshot is the automatic audio/midi auto connection daemon. May be able to replace this with `--jack-autoconnect` (and similar CLI flags) on guitarix and amsynth.
 - git to clone this repo
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
@@ -156,7 +163,7 @@ And then add the following lines to /etc/dbus-1/system.conf: (INSIDE \<busconfig
  </policy>
 ```
 
-This allows the dbus compiled jack server to run without a GUI running.
+This allows the dbus-compiled jack server to run without a GUI running.
 
 Run `raspi-config`:
 
@@ -166,7 +173,7 @@ Run `raspi-config`:
 ### **II7:** amSynth building from source.
 
 Build amSynth on your raspi using the instructions below. It's braindead simple to do.
-https://github.com/amsynth/amsynth/wiki/BuildingFromSource
+<https://github.com/amsynth/amsynth/wiki/BuildingFromSource>
 
 ### **II8:** Getting Music Stuff to run on boot
 
