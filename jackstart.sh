@@ -5,9 +5,9 @@ sudo killall gvfsd
 sudo killall dbus-daemon
 sudo killall dbus-launch
 cd /home/pi/DSPi
-jackd -P70 -p16 -t2000 -d alsa -dhw:CODEC -p 128 -n 3 -r 44100 -S -s -Xseq &
+jackd -P90 -p16 -t2000 -d alsa -dhw:CODEC -p256 -n3 -r48000 -S -s -Xseq &
 sleep 15
-guitarix --nogui &
+dspi=amsynth dspiSwitcher.sh
 sleep 15
 aj-snapshot -d aj-snapshot.xml &
 pd -alsamidi -midiindev 1 -nomidiout -nrt -nogui -noaudio midiDspSwitch.pd &

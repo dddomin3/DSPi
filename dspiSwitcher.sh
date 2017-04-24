@@ -13,7 +13,7 @@
   killall jack-rack
   killall amsynth
   sleep 10
-  amsynth -x -mjack -ajack -c9 -p4 -r44100 >> /home/pi/DSPi/jackboot.log &
+  amsynth -x -mjack -ajack -c9 -p4 -r48000 >> /home/pi/DSPi/jackboot.log &
   echo "wubwubwub"
   exit 0;
 )
