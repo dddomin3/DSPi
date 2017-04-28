@@ -5,7 +5,7 @@ sudo killall gvfsd
 sudo killall dbus-daemon
 sudo killall dbus-launch
 cd /home/pi/DSPi
-jackd -P90 -p16 -t2000 -d alsa -dhw:CODEC -p256 -n3 -r48000 -S -s -Xseq &
+jackd -P80 -p16 -S -t8000 -dalsa -dhw:CODEC -p128 -n4 -r48000 -s -S -Xseq &
 sleep 15
 dspi=amsynth dspiSwitcher.sh
 sleep 15
