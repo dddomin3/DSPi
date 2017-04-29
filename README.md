@@ -38,7 +38,7 @@ Feel free to use NOOBS or whatever way you install raspbian. This is just what i
 
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
-`sudo nano /etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
+`sudo nano /media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
 
 ```conf
 network={
@@ -174,6 +174,7 @@ Run `raspi-config`:
 
 Build amSynth on your raspi using the instructions below. It's braindead simple to do.
 <https://github.com/amsynth/amsynth/wiki/BuildingFromSource>
+Make sure you checkout a release. `git checkout release-1.7.1` is the most recent at the time of this commit (2017/04/29)
 
 ### **II8:** Getting Music Stuff to run on boot
 
@@ -200,10 +201,11 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I can't f
 
 ### **II9:** Pure Data
 
-jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script is responding to channel 16, MIDI CC 127. Depending on the value, a specific program will be ran, and others will be killed:
-0: Runs guitarix
-64: Runs amsynth
-127: Runs jack-rack (experimental, doesn't do anything but log help as of this commit.)
+jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script responds to values on MIDI:`CH16 CC 127`. Depending on the value, a specific program (or "DSPi") will be ran, and others will be killed:
+
+- 0: Runs guitarix (Turns off wireless chip)
+- 64: Runs amsynth (Turns off wireless chip)
+- 127: Turns on wireless chip
 
 ### **II10:** Run amSynth using native nogui option
 
