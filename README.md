@@ -146,7 +146,7 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git jack-rack pd-ggee`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git jack-rack pd-ggee mididings`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
@@ -155,7 +155,7 @@ Install this stuff!
 - git to clone this repo
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
-And then add the following lines to /etc/dbus-1/system.conf: (INSIDE \<busconfig\> tags!)
+And then add the following lines to `/etc/dbus-1/system.conf`: (INSIDE \<busconfig\> tags!)
 
 ```xml
  <policy user="pi">
@@ -165,14 +165,14 @@ And then add the following lines to /etc/dbus-1/system.conf: (INSIDE \<busconfig
 
 This allows the dbus-compiled jack server to run without a GUI running.
 
-Run `raspi-config`:
+Run `sudo raspi-config`:
 
-- Alter Boot Options so that raspi turns on with Console with auto-login (Boot Options -> B1 -> B2).
-- Set the GPU Memory to 16 under "Advanced Options -> A3"
+- Alter Boot Options so that raspi turns on with Console with auto-login (3 Boot Options -> B1 -> B2).
+- Set the GPU Memory to 16 under "7 Advanced Options -> A3"
 
 ### **II7:** amSynth building from source.
 
-Build amSynth on your raspi using the instructions below. It's braindead simple to do.
+Build amSynth on your raspi using the instructions below. It's braindead simple to do. 
 <https://github.com/amsynth/amsynth/wiki/BuildingFromSource>
 Make sure you checkout a release. `git checkout release-1.7.1` is the most recent at the time of this commit (2017/04/29)
 
@@ -180,7 +180,7 @@ Make sure you checkout a release. `git checkout release-1.7.1` is the most recen
 
 1. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi` <br/>
   Cloning this repo into ~/DSPi allows me to `git pull` to get any updates, since jackboot points at `~/DSPi/jackstart.sh`. Hopefully you can do the same!
-1. Move the jackboot script into init.d: `cp ~/DSPi/jackboot /etc/init.d/jackboot` and make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
+1. Move the jackboot script into init.d: `sudo cp ~/DSPi/jackboot /etc/init.d/jackboot` and make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
 1. Edit `~/DSPi/jackstart.sh` <br/>
   Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card) <br/>
   Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project. You can use qjackctl to help fine-tune settings without busting a blood vessel in your forehead. <br/>

@@ -1,4 +1,4 @@
-midi_driver	jack
+midi_driver	alsa
 oss_midi_device	/dev/midi
 midi_channel	9
 audio_driver	auto
