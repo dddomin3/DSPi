@@ -16,6 +16,7 @@
     <port id="0">
       <connection client="Midi Through" port="0" />
       <connection client="Pure Data" port="0" />
+      <connection client="amsynth" port="0" />
     </port>
     <port id="1" />
   </client>
