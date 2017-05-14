@@ -1,3 +1,6 @@
 jackboot.log
 .vscode
 .vscode/
+linux/
+tools/
+*.patch.gz
