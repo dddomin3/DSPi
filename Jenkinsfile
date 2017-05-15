@@ -10,6 +10,12 @@ pipeline {
             message: 'Lets build a kernel',
             parameters: [
               [
+                $class: 'ChoiceParameterDefinition',
+                choices: 'basicRtKernelConfig\nfullRtKernelConfig',
+                description: 'Pick between pre-made kernel config files.',
+                name: 'kernelConfig'
+              ],
+              [
                 $class: 'TextParameterDefinition',
                 name: 'toolsRepo',
                 defaultValue: '/home/cheekymusic/tools',
@@ -59,7 +65,6 @@ pipeline {
         script {
           sh("git clone --single-branch $userInput.toolsRepo")
           sh("git clone --single-branch $userInput.kernelRepo -b $userInput.kernelRepoTag")
-          dir('linux/') { sh("wget $userInput.patchUrl/$userInput.patchFile") }
         }
       }
     }
@@ -71,9 +76,15 @@ pipeline {
           echo ("dspiRepo: $userInput.dspiRepo")
           echo ("patchUrl: $userInput.patchUrl")
           echo ("patchFile: $userInput.patchFile")
+          echo ("kernelConfig: .$userInput.kernelConfig")
           sh('ls -la')
+          // Move pre-made configs into kernel folder
+          sh("mv .$userInput.kernelConfig linux/.config")
           // Patch Kernel code with realtime code
-          sh("zcat $userInput.patchFile | patch -p1")
+          dir('linux/') {
+            sh("wget $userInput.patchUrl/$userInput.patchFile")
+            sh("zcat $userInput.patchFile | patch -p1")
+          }
         }
       }
     }
