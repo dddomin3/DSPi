@@ -1,0 +1,7 @@
+export KERNEL_SRC=.
+export ARCH=arm
+export MODULES_TEMP=../modules
+export CCPREFIX=../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
+export CROSS_COMPILE=${CCPREFIX}
+export KERNEL=kernel7
+export INSTALL_MOD_PATH=../rtkernel
