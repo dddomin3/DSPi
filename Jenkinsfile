@@ -71,12 +71,6 @@ pipeline {
     stage('Patch Kernel') {
       steps {
         script {
-          echo ("kernelRepo: $userInput.kernelRepo")
-          echo ("toolsRepo: $userInput.toolsRepo")
-          echo ("dspiRepo: $userInput.dspiRepo")
-          echo ("patchUrl: $userInput.patchUrl")
-          echo ("patchFile: $userInput.patchFile")
-          echo ("kernelConfig: .$userInput.kernelConfig")
           sh('ls -la')
           // Move pre-made configs into kernel folder
           sh("mv .$userInput.kernelConfig linux/.config")
@@ -85,6 +79,32 @@ pipeline {
             sh("wget $userInput.patchUrl/$userInput.patchFile")
             sh("zcat $userInput.patchFile | patch -p1")
           }
+        }
+      }
+    }
+    stage('Build Kernel') {
+      steps {
+        script {
+          // echo ("kernelRepo: $userInput.kernelRepo")
+          // echo ("toolsRepo: $userInput.toolsRepo")
+          // echo ("dspiRepo: $userInput.dspiRepo")
+          // echo ("patchUrl: $userInput.patchUrl")
+          // echo ("patchFile: $userInput.patchFile")
+          // echo ("kernelConfig: .$userInput.kernelConfig")
+          sh('ls -la')
+          sh '''
+          source kernel.source
+          env
+'''
+          // Patch Kernel code with realtime code
+          // dir('linux/') {
+
+          //   make zImage modules dtbs -j4 # -j#, where # is CPU cores * 1.5 (of your compiling machine)
+          //   make modules_install -j4
+          //   mkdir ~/$INSTALL_MOD_PATH/boot/
+          //   ./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
+          //   sh("wget $userInput.patchUrl/$userInput.patchFile")
+          // }
         }
       }
     }
