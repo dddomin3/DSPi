@@ -53,27 +53,25 @@ pipeline {
     stage('Clone') {
       steps {
         script {
-          sh("git clone --single-branch " + userInput['toolsRepo'])
-          sh("git clone --single-branch " + userInput['kernelRepo'] + " -b " + userInput['kernelRepoTag'])
-          dir('linux/') {
-            sh("wget "+ userInput['patchUrl'] + "/" + userInput['patchFile'])
-          }
+          sh("git clone --single-branch $userInput.toolsRepo")
+          sh("git clone --single-branch $userInput.kernelRepo -b $userInput.kernelRepoTag")
+          dir('linux/') { sh("wget $userInput.patchUrl/$userInput.patchFile") }
         }
       }
     }
     stage('Patch Kernel') {
       steps {
         script {
-          echo ("kernelRepo: $userInput['kernelRepo']")
-          echo ("toolsRepo: $userInput['toolsRepo']")
-          echo ("dspiRepo: $userInput['dspiRepo']")
-          echo ("patchUrl: $userInput['patchUrl']")
-          echo ("patchFile: $userInput['patchFile']")
+          echo ("kernelRepo: $userInput.kernelRepo")
+          echo ("toolsRepo: $userInput.toolsRepo")
+          echo ("dspiRepo: $userInput.dspiRepo")
+          echo ("patchUrl: $userInput.patchUrl")
+          echo ("patchFile: $userInput.patchFile")
           sh("ls -la")
           sh("pwd")
-          sh("zcat $userInput['patchFile'] | patch -p1")
+          sh("zcat $userInput.patchFile | patch -p1")
           // Patch Kernel code with realtime code
-          // zcat userInput['patchFile'] | patch -p1
+          // zcat userInput.patchFile | patch -p1
         }
       }
     }
