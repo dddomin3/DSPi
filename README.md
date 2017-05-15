@@ -99,6 +99,10 @@ make menuconfig #Need a large terminal
 
 `make menuconfig` may fail if your terminal isn't maximized.
 
+OR
+
+you can just `mv .basicRtKernelConfig ~/linux/.config` and use the preconfigured config file in the repo...
+
 ### **II4:** One last step before building the kernel--Mis en place
 
 Plug in your Raspian SD card (should definitely work for other distros). Note how it mounts. You really just need to find the `/boot` and `/lib` directories.

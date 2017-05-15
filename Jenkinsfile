@@ -5,48 +5,52 @@ pipeline {
       steps {
         script {
           // Get User Input
-          userInput = input(id: 'userInput', message: 'Lets build a kernel', parameters: [
+          userInput = input(
+            id: 'userInput',
+            message: 'Lets build a kernel',
+            parameters: [
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: '/home/cheekymusic/tools',
                 name: 'toolsRepo',
+                defaultValue: '/home/cheekymusic/tools',
                 description: 'Repopath for kernel tools'
               ],
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: '/home/cheekymusic/linux',
                 name: 'kernelRepo',
+                defaultValue: '/home/cheekymusic/linux',
                 description: 'Repopath for kernel'
               ],
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: 'raspberrypi-kernel_1.20170303-1',
                 name: 'kernelRepoTag',
+                defaultValue: 'raspberrypi-kernel_1.20170303-1',
                 description: 'git tag for kernel repo'
               ],
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: '/home/cheekymusic/Documents/DSPi',
                 name: 'dspiRepo',
+                defaultValue: '/home/cheekymusic/Documents/DSPi',
                 description: 'Repopath for DSPi'
               ],
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/older',
                 name: 'patchUrl',
+                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/older',
                 description: 'URL to realtime kernel patch'
               ],
               [
                 $class: 'TextParameterDefinition',
-                defaultValue: 'patch-4.4.50-rt63.patch.gz',
                 name: 'patchFile',
+                defaultValue: 'patch-4.4.50-rt63.patch.gz',
                 description: 'kernel patch file name. Should be *.patch.gz'
               ]
-          ])
-          sh("git clean -xf")
-          sh("git reset --hard")
-          sh("rm -rf tools")
-          sh("rm -rf linux")
+            ]
+          )
+          sh('git clean -xf')
+          sh('git reset --hard')
+          sh('rm -rf tools')
+          sh('rm -rf linux')
         }
       }
     }
@@ -67,11 +71,9 @@ pipeline {
           echo ("dspiRepo: $userInput.dspiRepo")
           echo ("patchUrl: $userInput.patchUrl")
           echo ("patchFile: $userInput.patchFile")
-          sh("ls -la")
-          sh("pwd")
-          sh("zcat $userInput.patchFile | patch -p1")
+          sh('ls -la')
           // Patch Kernel code with realtime code
-          // zcat userInput.patchFile | patch -p1
+          sh("zcat $userInput.patchFile | patch -p1")
         }
       }
     }
