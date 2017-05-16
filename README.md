@@ -67,12 +67,12 @@ cd linux/
 make clean
 git clean -f
 git reset --hard
-git checkout raspberrypi-kernel_1.20170303-1
+git checkout raspberrypi-kernel_1.20170405-1
 ```
 
 Make sure, by the way, to check out a commit/release where the kernel version matches (look below for patches, etc)
 Check this file (and similar commits) for the kernel version. This usually happens after a release and whatnot.
-<https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170303-1>
+<https://github.com/raspberrypi/linux/tree/raspberrypi-kernel_1.20170405-1>
 
 ### **II2:** Grab Kernel Patch
 
@@ -83,6 +83,7 @@ zcat [patch.file.patch.gz] | patch -p1
 ```
 
 Make sure the kernel patch matches the kernel version in the previous step EXACTLY! I've made this mistake, and it prevents the pi from booting. YMMV.
+I used `patch-4.4.50-rt63.patch.gz` as of this commit.
 
 ### **II3:** Grab configs from raspi
 
@@ -91,7 +92,9 @@ scp pi@ip.address.of.pi:/proc/config.gz
 zcat config.gz > .config
 # or grab it from the sd card
 
-make menuconfig #Need a large terminal
+rm .oldconfig # do i need to do this?
+make olddefconfig # this sets defaults for a lot of stuff
+make menuconfig # Need a large terminal
 
 # Kernel Features > Preemption Kernel (Low Latency Desktop)
 # CPU Power Management > Frequency Scaling > Performance
@@ -101,7 +104,7 @@ make menuconfig #Need a large terminal
 
 OR
 
-you can just `mv .basicRtKernelConfig ~/linux/.config` and use the preconfigured config file in the repo...
+you can just `mv .basicRtKernelConfig ~/linux/.config` and use the preconfigured config file in the repo... this was generated with the directions above with the aforementioned kernel/patch versions
 
 ### **II4:** One last step before building the kernel--Mis en place
 
@@ -227,6 +230,12 @@ REALLY easy to do, actually. VERY well documented.
 - -r48000 runs amSynth at 48000 sample rate
 
 Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
+
+## **A:** Jenkins stuff
+
+Set up jenkins to bash.
+Get git plugin.
+Make new project based on this repo, pointing at Jenkinsfile.
 
 ## **i** Resources
 

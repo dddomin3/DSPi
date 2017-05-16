@@ -30,7 +30,7 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'kernelRepoTag',
-                defaultValue: 'raspberrypi-kernel_1.20170303-1',
+                defaultValue: 'raspberrypi-kernel_1.20170405-1',
                 description: 'git tag for kernel repo'
               ],
               [
@@ -55,8 +55,7 @@ pipeline {
           )
           sh('git clean -xf')
           sh('git reset --hard')
-          sh('rm -rf tools')
-          sh('rm -rf linux')
+          sh('rm -rf tools linux modules rtkernel')
         }
       }
     }
@@ -92,19 +91,18 @@ pipeline {
           // echo ("patchFile: $userInput.patchFile")
           // echo ("kernelConfig: .$userInput.kernelConfig")
           sh('ls -la')
-          sh '''
-          source kernel.source
-          env
-'''
-          // Patch Kernel code with realtime code
-          // dir('linux/') {
-
-          //   make zImage modules dtbs -j4 # -j#, where # is CPU cores * 1.5 (of your compiling machine)
-          //   make modules_install -j4
-          //   mkdir ~/$INSTALL_MOD_PATH/boot/
-          //   ./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
-          //   sh("wget $userInput.patchUrl/$userInput.patchFile")
-          // }
+          sh('mkdir modules')
+          sh('mkdir -p rtkernel/boot')
+          // LETS BUILD A KERNEL!!!
+          dir('linux/') {
+            sh '''
+              source ../jenkins.source
+              env
+              make zImage modules dtbs -j4
+              make modules_install -j4
+              ./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
+            '''
+          }
         }
       }
     }

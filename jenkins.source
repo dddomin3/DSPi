@@ -1,4 +1,4 @@
-export KERNEL_SRC=.
+export KERNEL_SRC=../linux
 export ARCH=arm
 export MODULES_TEMP=../modules
 export CCPREFIX=../tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-
