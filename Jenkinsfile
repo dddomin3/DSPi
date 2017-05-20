@@ -12,7 +12,7 @@ pipeline {
             parameters: [
               [
                 $class: 'ChoiceParameterDefinition',
-                choices: 'basicRtKernelConfig\nfullRtKernelConfig\ndontBuildAgain',
+                choices: 'basicRtKernelConfig\nfullRtKernelConfig\ndontBuildAgain\ndontBuildOrDeployAgain',
                 description: 'Pick between pre-made kernel config files.',
                 name: 'kernelConfig'
               ],
@@ -60,19 +60,19 @@ pipeline {
               ],
               [
                 $class: 'TextParameterDefinition',
-                name: 'deployPathLib',
-                defaultValue: '/media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/lib',
+                name: 'deployPathLibPrefix',
+                defaultValue: '/media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716',
                 description: 'Path to Raspi lib dir.'
               ]
             ]
           )
+          userInput['deployPathLib'] = "$userInput.deployPathLibPrefix/lib"          
           sh('git clean -xf')
           sh('git reset --hard')
-          if (userInput['kernelConfig'] != 'dontBuildAgain') {
-            sh('rm -rf tools linux modules rtkernel')
-
-          } else {
+          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
             echo 'Not cleaning previously built kernel.'
+          } else {
+            sh('rm -rf tools linux modules rtkernel')
           }
         }
       }
@@ -80,15 +80,15 @@ pipeline {
     stage('Clone') {
       steps {
         script {
-          if (userInput['kernelConfig'] != 'dontBuildAgain') {
+          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
+            echo 'Using previously pulled repos.'
+          }
+          else {
             parallel 'tools':{
               sh("git clone --single-branch $userInput.toolsRepo")
             }, 'kernel':{
               sh("git clone --single-branch $userInput.kernelRepo -b $userInput.kernelRepoTag")
             }
-          }
-          else {
-            echo 'Using previously pulled repos.'
           }
         }
       }
@@ -97,7 +97,9 @@ pipeline {
       steps {
         script {
 
-          if (userInput['kernelConfig'] != 'dontBuildAgain') {
+          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
+            echo 'No need to patch, reusing kernel'
+          } else {
             // Move pre-made configs into kernel folder
             sh("mv .$userInput.kernelConfig linux/.config")
             // Patch Kernel code with realtime code
@@ -105,8 +107,6 @@ pipeline {
               sh("wget $userInput.patchUrl/$userInput.patchFile")
               sh("zcat $userInput.patchFile | patch -p1")
             }
-          } else {
-            echo 'No need to patch, reusing kernel'
           }
         }
       }
@@ -114,7 +114,9 @@ pipeline {
     stage('Build Kernel') {
       steps {
         script {
-          if (userInput['kernelConfig'] != 'dontBuildAgain') {
+          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
+            echo 'No need to build kernel :)'
+          } else {
             sh('ls -la')
             sh('mkdir modules')
             sh('mkdir -p rtkernel/boot')
@@ -128,8 +130,6 @@ pipeline {
                 ./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
               '''
             }
-          } else {
-            echo 'No need to build kernel :)'
           }
         }
       }
@@ -138,18 +138,22 @@ pipeline {
       steps {
         script {
           sh('ls -la')
-          sh("sudo rm -r $userInput.deployPathBoot/overlays/ || true")
-          // sh("sudo rm -r $userInput.deployPathLib/firmware/") // do i need this part?
-          // LETS DEPLOY A KERNEL!!!
 
-          parallel 'boot':{
-            dir('rtkernel/boot/') {
-              sh("sudo cp -rd * $userInput.deployPathBoot/")
-              sh("sudo touch $userInput.deployPathBoot/ssh") // enables ssh for raspi
-            }
-          }, 'lib':{
-            dir('rtkernel/lib/') {
-              sh("sudo cp -dr * $userInput.deployPathLib/")
+          if (userInput['kernelConfig'] == 'dontBuildOrDeployAgain') {
+            echo('Not deploying previously deployed kernel :)')
+          } else {
+            echo("LETS DEPLOY A KERNEL!!!")
+            sh("sudo rm -r $userInput.deployPathBoot/overlays/ || true")
+            // sh("sudo rm -r $userInput.deployPathLib/firmware/") // do i need this part?
+            parallel 'boot':{
+              dir('rtkernel/boot/') {
+                sh("sudo cp -rd * $userInput.deployPathBoot/")
+                sh("sudo touch $userInput.deployPathBoot/ssh") // enables ssh for raspi
+              }
+            }, 'lib':{
+              dir('rtkernel/lib/') {
+                sh("sudo cp -dr * $userInput.deployPathLib/")
+              }
             }
           }
         }
@@ -159,7 +163,17 @@ pipeline {
       steps {
         script {
           sh('ls -la')
-          sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
+          if (sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf") == 0) {
+            sh '''
+sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
+    <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
+  <\\/policy>\\
+<\\/busconfig>/' system.conf
+            '''
+          } else { echo "Already configured system.conf!" }
+          if (sh("sudo grep -c \"dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N\" $userInput.deployPathBoot/cmdline.txt") == 0) {
+            sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
+          } else { echo "Already configured cmdline.txt!"} 
         }
       }
     }
