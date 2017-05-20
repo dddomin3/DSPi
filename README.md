@@ -235,7 +235,7 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 
 1. Set up jenkins to use `/bin/bash` for shell scripts.
 1. Get git plugin, and pipeline plugin.
-1. Make new project based on this repo, pointing at Jenkinsfile.
+1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
 1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL`  and to your sudoers. TODO: Should probably not give these permission to jenkins...
 
 ## **i** Resources

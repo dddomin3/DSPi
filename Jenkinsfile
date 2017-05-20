@@ -159,7 +159,7 @@ pipeline {
       steps {
         script {
           sh('ls -la')
-          sh("sudo sed -i '1s/$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
+          sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
         }
       }
     }
