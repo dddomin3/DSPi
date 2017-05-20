@@ -150,6 +150,16 @@ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N
 `dwc_otg.speed=1` Forces the USB controller to use 1.1 mode (since the USB 2.0 controller on the pi may cause issues with some audio interfaces)
 `smsc95xx.turbo_mode=N` Disable the turbo mode for the ethernet controller
 
+Then add the following lines to `/etc/dbus-1/system.conf`: (INSIDE \<busconfig\> tags!)
+
+```xml
+ <policy user="pi">
+       <allow own="org.freedesktop.ReserveDevice1.Audio1"/>
+ </policy>
+```
+
+This allows the dbus-compiled jack server to run without a GUI running.
+
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
@@ -162,15 +172,6 @@ Install this stuff!
 - git to clone this repo
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
-And then add the following lines to `/etc/dbus-1/system.conf`: (INSIDE \<busconfig\> tags!)
-
-```xml
- <policy user="pi">
-       <allow own="org.freedesktop.ReserveDevice1.Audio1"/>
- </policy>
-```
-
-This allows the dbus-compiled jack server to run without a GUI running.
 
 Run `sudo raspi-config`:
 
