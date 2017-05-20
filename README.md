@@ -231,12 +231,12 @@ REALLY easy to do, actually. VERY well documented.
 
 Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
 
-## **A:** Jenkins stuff
+## **A:** Jenkins can do up to II5 for you :)
 
-1. Set up jenkins to use /bin/bash for shell scripts.
-1. Get git plugin.
+1. Set up jenkins to use `/bin/bash` for shell scripts.
+1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile.
-1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL`  and to your sudoers. TODO: Should probably not give this permission to jenkins...
+1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL`  and to your sudoers. TODO: Should probably not give these permission to jenkins...
 
 ## **i** Resources
 
