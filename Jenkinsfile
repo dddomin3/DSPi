@@ -18,28 +18,16 @@ pipeline {
                 name: 'kernelConfig'
               ],
               [
-                $class: 'TextParameterDefinition',
-                name: 'toolsRepo',
-                defaultValue: '/home/cheekymusic/tools',
-                description: 'Repopath for kernel tools'
-              ],
-              [
-                $class: 'TextParameterDefinition',
-                name: 'kernelRepo',
-                defaultValue: '/home/cheekymusic/linux',
-                description: 'Repopath for kernel'
+                $class: 'ChoiceParameterDefinition',
+                choices: 'local\nremote',
+                description: 'Pick between cloning local repos or pulling from github.',
+                name: 'gitRepoLocation'
               ],
               [
                 $class: 'TextParameterDefinition',
                 name: 'kernelRepoTag',
                 defaultValue: 'raspberrypi-kernel_1.20170405-1',
                 description: 'git tag for kernel repo'
-              ],
-              [
-                $class: 'TextParameterDefinition',
-                name: 'dspiRepo',
-                defaultValue: '/home/cheekymusic/Documents/DSPi',
-                description: 'Repopath for DSPi'
               ],
               [
                 $class: 'TextParameterDefinition',
@@ -64,16 +52,32 @@ pipeline {
                 name: 'deployPathLibPrefix',
                 defaultValue: '/media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716',
                 description: 'Path to Raspi lib dir.'
+              ],
+              [
+                $class: 'TextParameterDefinition',
+                name: 'toolsRepo',
+                defaultValue: '/home/cheekymusic/tools',
+                description: 'Local Repopath for kernel tools'
+              ],
+              [
+                $class: 'TextParameterDefinition',
+                name: 'kernelRepo',
+                defaultValue: '/home/cheekymusic/linux',
+                description: 'Local Repopath for kernel'
               ]
             ]
           )
-          userInput['deployPathLib'] = "$userInput.deployPathLibPrefix/lib"          
-          sh('git clean -xf')
-          sh('git reset --hard')
+          userInput['deployPathLib'] = "$userInput.deployPathLibPrefix/lib"
+          if (userInput['gitRepoLocation'] == 'remote')  {
+            userInput['toolsRepo'] = 'https://github.com/raspberrypi/tools.git'
+            userInput['kernelRepo'] = 'https://github.com/raspberrypi/linux.git'
+          }
           if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
             echo 'Not cleaning previously built kernel.'
           } else {
             sh('rm -rf tools linux modules rtkernel')
+            sh('git clean -xf')
+            sh('git reset --hard')
           }
         }
       }
@@ -98,7 +102,7 @@ pipeline {
       steps {
         script {
           if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
-            echo 'No need to patch, reusing kernel'
+            echo 'No need to patch, reusing kernel :)'
           } else {
             // Move pre-made configs into kernel folder
             sh("mv .$userInput.kernelConfig linux/.config")
