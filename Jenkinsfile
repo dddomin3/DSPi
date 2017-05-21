@@ -12,8 +12,28 @@ pipeline {
             message: 'Lets build a kernel',
             parameters: [
               [
+                $class: 'BooleanParameterDefinition',
+                description: '(Re)build kernel?',
+                name: 'buildKernel'
+              ],
+              [
+                $class: 'BooleanParameterDefinition',
+                description: '(Re)deploy kernel?',
+                name: 'deployKernel'
+              ],
+              [
+                $class: 'BooleanParameterDefinition',
+                description: 'Configure cmdline and system.conf locally on pi sd card?',
+                name: 'localConfigPi'
+              ],
+              [
+                $class: 'BooleanParameterDefinition',
+                description: 'Install packages and other rando crap on booted pi?',
+                name: 'sshConfigPi'
+              ],
+              [
                 $class: 'ChoiceParameterDefinition',
-                choices: 'basicRtKernelConfig\nfullRtKernelConfig\ndontBuildAgain\ndontBuildOrDeployAgain',
+                choices: 'basicRtKernelConfig\nfullRtKernelConfig',
                 description: 'Pick between pre-made kernel config files.',
                 name: 'kernelConfig'
               ],
@@ -72,38 +92,32 @@ pipeline {
             userInput['toolsRepo'] = 'https://github.com/raspberrypi/tools.git'
             userInput['kernelRepo'] = 'https://github.com/raspberrypi/linux.git'
           }
-          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
-            echo 'Not cleaning previously built kernel.'
-          } else {
+          if (userInput['buildKernel']) {
             sh('rm -rf tools linux modules rtkernel')
             sh('git clean -xf')
             sh('git reset --hard')
-          }
+          } else { echo 'Not cleaning previously built kernel.' }
         }
       }
     }
     stage('Clone') {
       steps {
         script {
-          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
-            echo 'Using previously pulled repos.'
-          }
-          else {
+          if (userInput['buildKernel']) {
             parallel 'tools':{
               sh("git clone --single-branch $userInput.toolsRepo")
             }, 'kernel':{
               sh("git clone --single-branch $userInput.kernelRepo -b $userInput.kernelRepoTag")
             }
           }
+          else { echo 'Using previously pulled repos.' }
         }
       }
     }
     stage('Patch Kernel') {
       steps {
         script {
-          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
-            echo 'No need to patch, reusing kernel :)'
-          } else {
+          if (userInput['buildKernel']) {
             // Move pre-made configs into kernel folder
             sh("mv .$userInput.kernelConfig linux/.config")
             // Patch Kernel code with realtime code
@@ -111,16 +125,14 @@ pipeline {
               sh("wget $userInput.patchUrl/$userInput.patchFile")
               sh("zcat $userInput.patchFile | patch -p1")
             }
-          }
+          } else { echo 'No need to patch, reusing kernel :)' }
         }
       }
     }
     stage('Build Kernel') {
       steps {
         script {
-          if ((userInput['kernelConfig'] == 'dontBuildAgain')||(userInput['kernelConfig'] == 'dontBuildOrDeployAgain')) {
-            echo 'No need to build kernel :)'
-          } else {
+          if (userInput['buildKernel']) {
             sh('ls -la')
             sh('mkdir modules')
             sh('mkdir -p rtkernel/boot')
@@ -134,16 +146,14 @@ pipeline {
                 ./scripts/mkknlimg ./arch/arm/boot/zImage $INSTALL_MOD_PATH/boot/$KERNEL.img
               '''
             }
-          }
+          } else { echo 'No need to build kernel :)' }
         }
       }
     }
     stage('Deploy Kernel') {
       steps {
         script {
-          if (userInput['kernelConfig'] == 'dontBuildOrDeployAgain') {
-            echo('Not deploying previously deployed kernel :)')
-          } else {
+          if (userInput['deployKernel']) {
             echo("LETS DEPLOY A KERNEL!!!")
             sh("sudo rm -r $userInput.deployPathBoot/overlays/ || true")
             // sh("sudo rm -r $userInput.deployPathLib/firmware/") // do i need this part?
@@ -157,42 +167,54 @@ pipeline {
                 sh("sudo cp -dr * $userInput.deployPathLib/")
               }
             }
-          }
+          } else { echo('Not deploying previously deployed kernel :)') }
         }
       }
     }
     stage('Configure Pi Boot') {
       steps {
         script {
-          def configureSystemConf = false
-          // try catches to catch grep counts without exiting the jenkins script on shell script failure
-          ///////////////////////////////
-          // system.conf configuration //
-          ///////////////////////////////
+          if (userInput['localConfigPi']) {
+            def configureSystemConf = false
+            // try catches to catch grep counts without exiting the jenkins script on shell script failure
+            ///////////////////////////////
+            // system.conf configuration //
+            ///////////////////////////////
 
-          try {
-            sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf")
-          } catch(e1) { configureSystemConf = true }
+            try {
+              sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf")
+            } catch(e1) { configureSystemConf = true }
 
-          if (configureSystemConf) {
-            sh """
-sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
-    <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
-  <\\/policy>\\
-<\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf
-            """
-          } else { echo "Already configured system.conf!" }
-          ///////////////////////////////
-          // cmdline.txt configuration //
-          ///////////////////////////////
-          def configureCmdlineTxt = false
-          try {
-            sh("sudo grep -c \"dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N\" $userInput.deployPathBoot/cmdline.txt")
-          } catch(e1) { configureCmdlineTxt = true }
+            if (configureSystemConf) {
+              sh """
+  sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
+      <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
+    <\\/policy>\\
+  <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf
+              """
+            } else { echo "Already configured system.conf!" }
+            ///////////////////////////////
+            // cmdline.txt configuration //
+            ///////////////////////////////
+            def configureCmdlineTxt = false
+            try {
+              sh("sudo grep -c \"dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N\" $userInput.deployPathBoot/cmdline.txt")
+            } catch(e1) { configureCmdlineTxt = true }
 
-          if (configureCmdlineTxt) {
-            sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
-          } else { echo "Already configured cmdline.txt!"} 
+            if (configureCmdlineTxt) {
+              sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
+            } else { echo "Already configured cmdline.txt!"} 
+          } else { echo 'Not doing local pi configs :)' }
+        }
+      }
+    }
+    stage('ssh Configure Pi') {
+      steps {
+        script {
+          if (userInput['sshConfigPi']) {
+            echo 'Figure out how to ssh...'
+          }
+          else { echo 'Not ssh-ing to pi to configure anything :)' }
         }
       }
     }
