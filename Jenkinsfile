@@ -32,6 +32,11 @@ pipeline {
                 name: 'sshConfigPi'
               ],
               [
+                $class: 'FileParameterDefinition',
+                description: 'Upload a wpa_supplicant.conf file if you want to configure wireless SSIDs.',
+                name: 'wpa_supplicant'
+              ],
+              [
                 $class: 'ChoiceParameterDefinition',
                 choices: 'basicRtKernelConfig\nfullRtKernelConfig',
                 description: 'Pick between pre-made kernel config files.',
@@ -203,7 +208,22 @@ pipeline {
 
             if (configureCmdlineTxt) {
               sh("sudo sed -i '1s/\$/ dwc_otg.speed=1 sdhci_bcm2708.enable_llm=0 smsc95xx.turbo_mode=N/' $userInput.deployPathBoot/cmdline.txt")
-            } else { echo "Already configured cmdline.txt!"} 
+            } else { echo "Already configured cmdline.txt!"}
+            ///////////////////////////////////////
+            // wpa_supplicant.conf configuration //
+            ///////////////////////////////////////
+            sh("cat $userInput.wpa_supplicant")
+
+            def configureWpaSupplicant = false
+            try {
+              sh("sudo grep -ic ssid $userInput.wpa_supplicant")
+              configureWpaSupplicant = true
+            } catch(e1) { configureWpaSupplicant = false }
+            if (configureWpaSupplicant) {
+              sh("sudo cp $userInput.wpa_supplicant $userInput.deployPathLibPrefix/etc/wpa_supplicant/wpa_supplicant.conf")
+              sh("sudo chmod 600 $userInput.deployPathLibPrefix/etc/wpa_supplicant/wpa_supplicant.conf")
+              sh("sudo chown root:root $userInput.deployPathLibPrefix/etc/wpa_supplicant/wpa_supplicant.conf")
+            } else { echo "Invalid wpa_supplicant.conf!" }
           } else { echo 'Not doing local pi configs :)' }
         }
       }
