@@ -221,10 +221,10 @@ Note: As of this commit, amsynth on the raspian repos do not support this option
 <https://github.com/amsynth/amsynth/wiki/BuildingFromSource>
 REALLY easy to do, actually. VERY well documented.
 
-`amsynth -x -mjack -ajack -r48000 -c9 -p4`
+`amsynth -x -mjack -aalsa -r48000 -c9 -p4`
 
 - -x is no gui
-- -mjack forces jack midi
+- -mjack forces alsa midi
 - -ajack forces jack audio
 - -c9 makes amSynth respond to midi channel 9
 - -p4 is max of 4 notes of polyphony
@@ -234,10 +234,10 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 
 ## **A:** Jenkins can do up to II5 for you :)
 
-1. Set up jenkins to use `/bin/bash` for shell scripts.
+1. Set up jenkins to use `/bin/bash` for shell scripts. (Check in settings...)
 1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
-1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL`  and to your sudoers. TODO: Should probably not give these permission to jenkins...
+1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. TODO: Should probably not give ALL these permission to jenkins...
 
 ## **i** Resources
 
