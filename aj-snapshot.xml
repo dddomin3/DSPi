@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <alsa>
-  <client name="System">
-    <port id="0" />
-    <port id="1" />
-  </client>
   <client name="Midi Through">
     <port id="0" />
   </client>
@@ -18,25 +14,39 @@
       <connection client="Pure Data" port="0" />
       <connection client="amsynth" port="0" />
     </port>
-    <port id="1" />
   </client>
   <client name="jack_midi" />
-  <client name="aj-snapshot" />
-  <client name="Pure Data" />
+  <client name="Pure Data">
+    <!--
+      Pure Data translates weird values from MIDI Fighter into useable values.
+      Much of these weird values occur on channel 14, some (Program Change) occur on Channel 16.
+    -->
+    <port id="0">
+      <connection client="amsynth" port="0" />
+    </port>
+  </client>
   <client name="mididings">
+    <!--
+      Mididings filters out all notes coming from MIDI Fighter Twister.
+      We don't use it for notes. We use it for CCs.
+    -->
     <port id="1">
       <connection client="Pure Data" port="0" />
       <connection client="amsynth" port="0" />
       <connection client="Midi Through" port="0" />
+      <connection client="mio" port="0" />
     </port>
   </client>
-  <client name="Client-132" />
   <client name="amsynth">
+    <!--
+      amSynth outputs values out to the MIDI Fighter on bank/program change
+    -->
     <port id="1">
       <connection client="Midi Fighter Twister" port="0" />
     </port>
   </client>
 </alsa>
+<!-- Guitarix should do this itself...
 <jack>
   <client name="system">
     <port name="capture_1">
@@ -60,3 +70,4 @@
     </port>
   </client>
 </jack>
+-->
