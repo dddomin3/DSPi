@@ -34,7 +34,7 @@ Installs Raspian to your sd card.
 
 Feel free to use NOOBS or whatever way you install raspbian. This is just what i do! :)
 
-### **I3:** Making your new pi experience better:
+### **I3:** Making your new pi experience better
 
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
@@ -118,7 +118,7 @@ sudo apt-get install git build-essential make lzop ncurses-dev gcc-arm-linux-gnu
 `sudo yum install #...` may work for non-debian systems. The only things that may differ are `build-essential` and `dev-essential`.
 
 Edit installkernal.sh and kernel.source to match the directories for your system.
-Note: `/media/cheekymusic` is where the sd card was mounted. `/home/cheekymusic === ~` 
+Note: `/media/cheekymusic` is where the sd card was mounted. `/home/cheekymusic === ~`
 `chmod 755 installkernel.sh` so you can execute it.
 
 TODO: Figure out if we really need to delete the firmware here.
@@ -178,9 +178,9 @@ Run `sudo raspi-config`:
 - Alter Boot Options so that raspi turns on with Console with auto-login (3 Boot Options -> B1 -> B2).
 - Set the GPU Memory to 16 under "7 Advanced Options -> A3"
 
-### **II7:** amSynth building from source.
+### **II7:** amSynth building from source
 
-Build amSynth on your raspi using the instructions below. It's braindead simple to do. 
+Build amSynth on your raspi using the instructions below. It's braindead simple to do.
 <https://github.com/amsynth/amsynth/wiki/BuildingFromSource>
 Make sure you checkout a release. `git checkout release-1.7.1` is the most recent at the time of this commit (2017/04/29)
 
