@@ -3,12 +3,12 @@
   <client name="Midi Through">
     <port id="0" />
   </client>
-  <client name="Midi Fighter Twister">
+  <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
       <connection client="mididings" port="0" />
     </port>
   </client>
-  <client name="mio">
+  <client name="mio"> <!-- Octatrack. DIN world. -->
     <port id="0">
       <connection client="Midi Through" port="0" />
       <connection client="Pure Data" port="0" />
@@ -24,7 +24,7 @@
       <connection client="amsynth" port="0" />
     </port>
   </client>
-  <client name="mididings">
+  <client name="mididings"> <!-- Clean MFT Signal -->
     <!--
       Mididings filters out all notes coming from MIDI Fighter Twister.
       We don't use it for notes. We use it for CCs.
