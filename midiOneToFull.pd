@@ -1,0 +1,8 @@
+#N canvas 1 78 450 300 10;
+#X obj 143 86 select 1;
+#X msg 143 112 127;
+#X obj 143 57 ctlin \$1 \$2;
+#X obj 143 139 ctlout \$1 \$2;
+#X connect 0 0 1 0;
+#X connect 1 0 3 0;
+#X connect 2 0 0 0;
