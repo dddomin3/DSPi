@@ -8,9 +8,16 @@
       <connection client="mididings" port="0" />
     </port>
   </client>
+  <client name="QuNexus">
+    <port id="0">
+      <connection client="amsynth" port="0" />
+      <connection client="mio" port="0" />
+    </port>
+    <port id="1" />
+    <port id="2" />
+  </client>
   <client name="mio"> <!-- Octatrack. DIN world. -->
     <port id="0">
-      <connection client="Midi Through" port="0" />
       <connection client="Pure Data" port="0" />
       <connection client="amsynth" port="0" />
     </port>
@@ -22,6 +29,7 @@
     -->
     <port id="1">
       <connection client="amsynth" port="0" />
+      <connection client="mio" port="0" />
     </port>
   </client>
   <client name="mididings"> <!-- Clean MFT Signal -->
@@ -32,7 +40,6 @@
     <port id="1">
       <connection client="Pure Data" port="0" />
       <connection client="amsynth" port="0" />
-      <connection client="Midi Through" port="0" />
       <connection client="mio" port="0" />
     </port>
   </client>
