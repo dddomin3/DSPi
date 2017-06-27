@@ -5,9 +5,10 @@ killall -9 guitarix
 killall -9 jackd
 
 # This checks to see if an arguement was passed in. This overwrites the dspi environment variable
-if [ ${#1} -gt 0 ] && ( 
-  dspi = $1
-)
+if [ "${#1}" -gt "0" ]; then
+  dspi=$1
+fi
+
 [ $dspi == 'guitarix' ] && (
   jackd -P80 -p16 -S -t2000 -dalsa -dhw:CODEC,0 -p64 -n6 -r48000 -s -S -Xseq -D >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
