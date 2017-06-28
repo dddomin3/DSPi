@@ -93,7 +93,7 @@
 #X text 571 767 Audio Mutes;
 #X text 282 766 MIDI Mutes;
 #X text 342 434 CC to Program Change;
-#X msg 175 331 /home/pi/DSPi/dspiSwitcher.sh guitarix;
+#X msg 175 331 /home/pi/DSPi/bash/dspiSwitcher.sh guitarix;
 #X obj 758 746 ctlin 46;
 #X obj 758 777 ctlout 46;
 #X obj 843 746 ctlin 47;
@@ -103,8 +103,8 @@
 ;
 #X text 222 396 ==========MIDI Fighter Twister Translation Station==========
 ;
-#X msg 209 242 /home/pi/DSPi/dspiSwitcher.sh amsynth;
-#X msg 242 158 /home/pi/DSPi/dspiSwitcher.sh debug;
+#X msg 209 242 /home/pi/DSPi/bash/dspiSwitcher.sh amsynth;
+#X msg 242 158 /home/pi/DSPi/bash/dspiSwitcher.sh debug;
 #X connect 0 0 1 0;
 #X connect 0 0 18 0;
 #X connect 2 0 5 0;

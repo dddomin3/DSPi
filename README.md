@@ -187,18 +187,18 @@ Make sure you checkout a release. `git checkout release-1.7.1` is the most recen
 ### **II8:** Getting Music Stuff to run on boot
 
 1. `git clone https://github.com/dddomin3/DSPi.git ~/DSPi` <br/>
-  Cloning this repo into ~/DSPi allows me to `git pull` to get any updates, since jackboot points at `~/DSPi/jackstart.sh`. Hopefully you can do the same!
-1. Move the jackboot script into init.d: `sudo cp ~/DSPi/jackboot /etc/init.d/jackboot` and make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
-1. Edit `~/DSPi/jackstart.sh` <br/>
+  Cloning this repo into ~/DSPi allows me to `git pull` to get any updates, since jackboot points at `~/DSPi/bash/jackstart.sh`. Hopefully you can do the same!
+1. Move the jackboot script into init.d: `sudo cp ~/DSPi/bash/jackboot /etc/init.d/jackboot` and make sure it's executable: `sudo chmod 755 /etc/init.d/jackboot`
+1. Edit `~/DSPi/bash/jackstart.sh` <br/>
   Edit Line 7 of `jackstart.sh` ( `-dhw:CODEC` ) to match your soundcard (run `qjackctl` to figure out the name of your sound card) <br/>
   Honestly, you might have to experiment A LOT with this line. It has the biggest effect on your audio latency, which is the core of this entire project. You can use qjackctl to help fine-tune settings without busting a blood vessel in your forehead. <br/>
   For a fact, if you're not using the UCA-222/202, you probably don't want `-S` (Force 16-bit, since UCA-222 is 16-bit) <br/>
-1. Make sure it's executable: `sudo chmod 755 ~/DSPi/jackstart.sh`
+1. Make sure it's executable: `sudo chmod 755 ~/DSPi/bash/jackstart.sh`
 NOTE: This is because the audio stuff needs to run as the pi user, and I can't figure to a better way to do that...
 1. Register it in update-rc.d `sudo update-rc.d jackboot defaults`
 1. Run `jackstart.sh` manually, then run `qjackctl &`
 1. Open up the connections menu, and make all the connections you desire. Plug in any midi controllers, and route connections from them, to MIDI-Through (in alsa tab), and from system:1 to guitarix (on MIDI tab), `amsynth` and `jack-rack`. Using the `seq` drivers midi-through allows for easy modification of your midi-autoconnection schema. Most of the time, I just add another connection by hand (once I know the name of the controller in alsa) in the `aj-snapshot.xml`.
-1. Run `aj-snapshot ~/DSPi/aj-snapshot.xml` to generate the aj-snapshot file used in `jackstart.sh`.
+1. Run `aj-snapshot ~/DSPi/configs/aj-snapshot.xml` to generate the aj-snapshot file used in `jackstart.sh`.
 1. `touch jackboot.log` if you want to have user access to the logs. Otherwise, `root` creates the logs, and you'll need to sudo to access them.
 
 > If you ever want to remove the script from start-up, run the following command:
