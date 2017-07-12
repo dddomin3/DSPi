@@ -124,7 +124,7 @@ pipeline {
         script {
           if (userInput['buildKernel']) {
             // Move pre-made configs into kernel folder
-            sh("mv .$userInput.kernelConfig linux/.config")
+            sh("mv configs/.$userInput.kernelConfig linux/.config")
             // Patch Kernel code with realtime code
             dir('linux/') {
               sh("wget $userInput.patchUrl/$userInput.patchFile")
@@ -144,7 +144,7 @@ pipeline {
             // LETS BUILD A KERNEL!!!
             dir('linux/') {
               sh '''
-                source ../jenkins.source
+                source ../bash/jenkins.source
                 env
                 make zImage modules dtbs -j4
                 make modules_install -j4
