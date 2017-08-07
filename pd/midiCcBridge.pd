@@ -1,0 +1,9 @@
+#N canvas 337 708 450 300 10;
+#X obj 34 32 ctlin \$1 \$2;
+#X obj 34 53 ctlout \$3 \$4;
+#X obj 163 31 ctlin \$3 \$4;
+#X obj 163 53 ctlout \$1 \$2;
+#X text 39 10 MFT -> Out;
+#X text 169 9 Out -> MFT;
+#X connect 0 0 1 0;
+#X connect 2 0 3 0;
