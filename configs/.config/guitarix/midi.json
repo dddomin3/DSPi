@@ -1,0 +1,77 @@
+[
+  "midi_controller", [
+
+    /******* Row 1: Dist and Toan *******/
+
+    47, [["overdrive.on_off", 0], ["fuzzface.on_off", 0], ["ts9sim.on_off", 0]],
+    48, [["overdrive.drive", 1, 20], ["fuzzface.Fuzz", 0, 1], ["ts9sim.drive", 0, 1], ["distortion2.drive", 0, 100]],
+    49, [["overdrive.wet_dry", 0, 100], ["distortion2.wet_dry", 0, 100]],
+    50, [["ts9sim.tone", 100, 1000], ["distortion2.freq", 1000, 20000]],
+    51, [["fuzzface.Level", 0, 1], ["ts9sim.level", -20, 4]],
+
+    // Shift
+
+    112, [["amp.tonestack.select", 0, 26]],
+    113, [["amp.tonestack.Bass", 0, 1]],
+    114, [["amp.tonestack.Middle", 0, 1]],
+    115, [["amp.tonestack.Treble", 0, 1]],
+
+    /******* Row 2: Amp *******/
+
+    52, [["amp2.stage1.Pregain", -20, 20]],
+    53, [["gxdistortion.drive", 0, 1]],
+    54, [["gxdistortion.wet_dry", 0, 100]],
+    55, [["amp2.stage2.gain1", -20, 20]],
+
+    // Shift
+
+    116, [["bassbooster.Level", 0.5, 20], ["amp.bass_boost.on_off", 0]],
+    117, [["con.Level", 0.5, 5], ["con.on_off", 0]], // presence
+    118, [["tube.select", 0, 18]],
+    119, [["noise_gate.on_off", 0]],
+    
+    /******* Row 3: Cab and Sim *******/
+
+    // 63, [["pre.on_off", 0]],
+    56, [["pre.select", 0, 9]],
+    57, [["pre.bass", -10, 10]],
+    58, [["pre.treble", -10, 10]],
+    59, [["pre.Level", 0.1, 2.1]],
+
+    // 68, [["cab.on_off", 0]],
+    122, [["cab.select", 0, 16]],
+    70, [["cab.bass", -10, 10]],
+    71, [["cab.treble", -10, 10]],
+    72, [["cab.Level", 0.5, 5]],
+
+     /******* Row 4 FX *******/
+
+    80, [["freeverb.on_off", 0]],
+    81, [["freeverb.RoomSize", 0, 1]],
+    82, [["freeverb.damp", 0, 1]],
+    83, [["freeverb.wet_dry", 0, 100]],
+    84, [["echo.bpm", 24, 360]],
+    85, [["echo.on_off", 0], ["echo.percent", 0, 100]],
+    86, [["chorus.on_off", 0], ["chorus.level", 0, 1]],
+    87, [["chorus.delay", 0, 0.2], ["eq.level1", -50, 50]],
+    88, [["chorus.depth", 0, 1]],
+    89, [["chorus.freq", 0, 10]],
+    90, [["distortion2.Hfreq", 20, 2000]]
+    // 91, [["compressor.on_off", 0]],
+    // 92, [["compressor.knee", 0, 20]],
+    // 93, [["compressor.ratio", 1, 20]],
+    // 94, [["compressor.threshold", -96, 10]],
+    // 95, [["compressor.attack", 0, 1]],
+    // 96, [["compressor.release", 0, 10]],
+    // 97, [["distortion2.gain", -30, 10]],
+    // 77, [["moog.on_off", 0]],
+    // 78, [["moog.Q", 0, 4]],
+    // 79, [["moog.fr", 440, 6000]],
+
+    // 98, [["hfb.on_off", 0]],
+    // 99, [["hfb.Volume", 0, 1]],
+    // 100, [["hfb.Intensity", 0, 1]]
+  ],
+  "midi_ctrl_names", {
+  }
+]
