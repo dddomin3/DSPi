@@ -39,24 +39,19 @@
     59, [["pre.Level", 0.1, 2.1]],
 
     // 68, [["cab.on_off", 0]],
-    122, [["cab.select", 0, 16]],
-    70, [["cab.bass", -10, 10]],
-    71, [["cab.treble", -10, 10]],
-    72, [["cab.Level", 0.5, 5]],
+    120, [["cab.select", 0, 16]],
+    121, [["cab.bass", -10, 10]],
+    122, [["cab.treble", -10, 10]],
+    123, [["cab.Level", 0.5, 5]],
 
      /******* Row 4 FX *******/
 
-    80, [["freeverb.on_off", 0]],
-    81, [["freeverb.RoomSize", 0, 1]],
-    82, [["freeverb.damp", 0, 1]],
-    83, [["freeverb.wet_dry", 0, 100]],
-    84, [["echo.bpm", 24, 360]],
-    85, [["echo.on_off", 0], ["echo.percent", 0, 100]],
-    86, [["chorus.on_off", 0], ["chorus.level", 0, 1]],
-    87, [["chorus.delay", 0, 0.2], ["eq.level1", -50, 50]],
-    88, [["chorus.depth", 0, 1]],
-    89, [["chorus.freq", 0, 10]],
-    90, [["distortion2.Hfreq", 20, 2000]]
+    60, [["freeverb.on_off", 0], ["freeverb.wet_dry", 0, 100], ["echo.on_off", 0], ["echo.percent", 0, 100]],
+    61, [["freeverb.RoomSize", 0, 1], ["chorus.delay", 0, 0.2]],
+    62, [["freeverb.damp", 0, 1], ["chorus.depth", 0, 1]],
+    63, [["echo.bpm", 24, 360], ["chorus.freq", 0, 10]]
+    
+    // 90, [["distortion2.Hfreq", 20, 2000]]
     // 91, [["compressor.on_off", 0]],
     // 92, [["compressor.knee", 0, 20]],
     // 93, [["compressor.ratio", 1, 20]],
