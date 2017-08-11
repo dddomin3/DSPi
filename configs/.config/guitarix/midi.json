@@ -3,58 +3,62 @@
 
     /******* Row 1: Dist and Toan *******/
 
-    47, [["overdrive.on_off", 0], ["fuzzface.on_off", 0], ["ts9sim.on_off", 0]],
-    48, [["overdrive.drive", 1, 20], ["fuzzface.Fuzz", 0, 1], ["ts9sim.drive", 0, 1], ["distortion2.drive", 0, 100]],
-    49, [["overdrive.wet_dry", 0, 100], ["distortion2.wet_dry", 0, 100]],
-    50, [["ts9sim.tone", 100, 1000], ["distortion2.freq", 1000, 20000]],
-    51, [["fuzzface.Level", 0, 1], ["ts9sim.level", -20, 4]],
+    96, [["overdrive.on_off", 0], ["fuzzface.on_off", 0], ["ts9sim.on_off", 0]],
+    64, [["overdrive.drive", 1, 20], ["fuzzface.Fuzz", 0, 1], ["ts9sim.drive", 0, 1], ["distortion2.drive", 0, 100]],
+    65, [["overdrive.wet_dry", 0, 100], ["distortion2.wet_dry", 0, 100]],
+    66, [["ts9sim.tone", 100, 1000], ["distortion2.freq", 1000, 20000]],
+    67, [["fuzzface.Level", 0, 1], ["ts9sim.level", -20, 4]],
 
-    // Shift
+    // Shift 97
 
-    112, [["amp.tonestack.select", 0, 26]],
-    113, [["amp.tonestack.Bass", 0, 1]],
-    114, [["amp.tonestack.Middle", 0, 1]],
-    115, [["amp.tonestack.Treble", 0, 1]],
+    80, [["amp.tonestack.select", 0, 26]],
+    81, [["amp.tonestack.Bass", 0, 1]],
+    82, [["amp.tonestack.Middle", 0, 1]],
+    83, [["amp.tonestack.Treble", 0, 1]],
 
-    /******* Row 2: Amp *******/
+    /******* Row 2: Amp *******/ // 98
 
-    52, [["amp2.stage1.Pregain", -20, 20]],
-    53, [["gxdistortion.drive", 0, 1]],
-    54, [["gxdistortion.wet_dry", 0, 100]],
-    55, [["amp2.stage2.gain1", -20, 20]],
+    68, [["amp2.stage1.Pregain", -20, 20]],
+    69, [["gxdistortion.drive", 0, 1]],
+    70, [["gxdistortion.wet_dry", 0, 100]],
+    71, [["amp2.stage2.gain1", -20, 20]],
 
-    // Shift
+    // Shift // 99
 
-    116, [["bassbooster.Level", 0.5, 20], ["amp.bass_boost.on_off", 0]],
-    117, [["con.Level", 0.5, 5], ["con.on_off", 0]], // presence
-    118, [["tube.select", 0, 18]],
-    119, [["noise_gate.on_off", 0]],
+    84, [["bassbooster.Level", 0.5, 20], ["amp.bass_boost.on_off", 0]],
+    85, [["con.Level", 0.5, 5], ["con.on_off", 0]], // presence
+    86, [["tube.select", 0, 18]],
+    87, [["noise_gate.on_off", 0]],
     
-    /******* Row 3: Cab and Sim *******/
+    /******* Row 3: Cab and Sim *******/ //100
 
     // 63, [["pre.on_off", 0]],
-    56, [["pre.select", 0, 9]],
-    57, [["pre.bass", -10, 10]],
-    58, [["pre.treble", -10, 10]],
-    59, [["pre.Level", 0.1, 2.1]],
+    72, [["pre.select", 0, 9]],
+    73, [["pre.bass", -10, 10]],
+    74, [["pre.treble", -10, 10]],
+    75, [["pre.Level", 0.1, 2.1]],
 
+    // Shift 101
     // 68, [["cab.on_off", 0]],
-    120, [["cab.select", 0, 16]],
-    121, [["cab.bass", -10, 10]],
-    122, [["cab.treble", -10, 10]],
-    123, [["cab.Level", 0.5, 5]],
+    88, [["cab.select", 0, 16]],
+    89, [["cab.bass", -10, 10]],
+    90, [["cab.treble", -10, 10]],
+    91, [["cab.Level", 0.5, 5]],
 
-     /******* Row 4 FX *******/
+     /******* Row 4 FX *******/ // 102
 
-    60, [["freeverb.on_off", 0], ["freeverb.wet_dry", 0, 100], ["echo.on_off", 0], ["echo.percent", 0, 100]],
-    61, [["freeverb.RoomSize", 0, 1], ["chorus.delay", 0, 0.2]],
-    62, [["freeverb.damp", 0, 1], ["chorus.depth", 0, 1]],
-    63, [["echo.bpm", 24, 360], ["chorus.freq", 0, 10]]
+    76, [["freeverb.on_off", 0], ["freeverb.wet_dry", 0, 100], ["echo.on_off", 0], ["echo.percent", 0, 100]],
+    77, [["freeverb.RoomSize", 0, 1], ["chorus.delay", 0, 0.2]],
+    78, [["freeverb.damp", 0, 1], ["chorus.depth", 0, 1]],
+    79, [["echo.bpm", 24, 360], ["chorus.freq", 0, 10]]
     
-    // 90, [["distortion2.Hfreq", 20, 2000]]
-    // 91, [["compressor.on_off", 0]],
-    // 92, [["compressor.knee", 0, 20]],
-    // 93, [["compressor.ratio", 1, 20]],
+    // Shift 103
+    
+    // 92, [["distortion2.Hfreq", 20, 2000]]
+    // 93, [["compressor.on_off", 0]],
+    // 94, [["compressor.knee", 0, 20]],
+    // 95, [["compressor.ratio", 1, 20]],
+
     // 94, [["compressor.threshold", -96, 10]],
     // 95, [["compressor.attack", 0, 1]],
     // 96, [["compressor.release", 0, 10]],
