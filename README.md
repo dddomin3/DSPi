@@ -241,41 +241,41 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 
 ## **B:** MIDI Reference
 
-*Channel 1*
-  **MFTT** *CC 0-63* MIDI Out and Updates
-*Channel 2*
-  **MFTT** *CC 0-127* Switch Out and Indicator Light In
-*Channel 3*
-  **MFTT** *CC 0-63* Switch Animations & Brightness
-*Channel 4*
-  **MFTT** *CC 0-3, 8-31* Banks and Side Buttons
-*Channel 5*
-  **MFTT** *CC 0-63* Shift Out and Updates
-  **Guitarix** *CC 64-103* Guitar Amp and EFX Params
-*Channel 6*
-  **MFTT** *CC 0-127* Ring Animations and Brightness
-*Channel 7*
-  **Octa** *Notes, CC 46, 47, 49* Track 7: Mutes, Volumes, and Cues
-*Channel 8*
-  **MFTT** *CC ??* Sequencer
-  **Octa** *Notes, CC 46, 47, 49* Track 8: Mutes, Volumes, and Cues
-*Channel 9*
-  **amSynth** *Notes, CC 0-80, PC* Synth Params
-*Channel 10*
-  **Octa** Auto Channel
-*Channel 11*
-  **Octa** *Notes, CC 46, 47, 49, 112-119* Track 1: Mutes, Volumes, and Cues
-*Channel 12*
-  **Octa** *Notes, CC 46, 47, 49* Track 2: Mutes, Volumes, and Cues
-*Channel 13*
-  **Octa** *Notes, CC 46, 47, 49* Track 3: Mutes, Volumes, and Cues
-*Channel 14*
-  **Octa** *Notes, CC 46, 47, 49* Track 4: Mutes, Volumes, and Cues
-*Channel 15*
-  **Octa** *Notes, CC 46, 47, 49* Track 5: Mutes, Volumes, and Cues
-*Channel 16*
-  **Meta** *PC* DSPi Switch
-  **Octa** *Notes, CC 46, 47, 49* Track 6: Mutes, Volumes, and Cues
+- *Channel 1*
+  - **MFTT** *CC 0-63* MIDI Out and Updates
+- *Channel 2*
+  - **MFTT** *CC 0-127* Switch Out and Indicator Light In
+- *Channel 3*
+  - **MFTT** *CC 0-63* Switch Animations & Brightness
+- *Channel 4*
+  - **MFTT** *CC 0-3, 8-31* Banks and Side Buttons
+- *Channel 5*
+  - **MFTT** *CC 0-63* Shift Out and Updates
+  - **Guitarix** *CC 64-103* Guitar Amp and EFX Params
+- *Channel 6*
+  - **MFTT** *CC 0-127* Ring Animations and Brightness
+- *Channel 7*
+  - **Octa** *Notes, CC 46, 47, 49* Track 7: Mutes, Volumes, and Cues
+- *Channel 8*
+  - **MFTT** *CC ??* Sequencer
+  - **Octa** *Notes, CC 46, 47, 49* Track 8: Mutes, Volumes, and Cues
+- *Channel 9*
+  - **amSynth** *Notes, CC 0-80, PC* Synth Params
+- *Channel 10*
+  - **Octa** Auto Channel
+- *Channel 11*
+  - **Octa** *Notes, CC 46, 47, 49, 112-119* Track 1: Mutes, Volumes, and Cues
+- *Channel 12*
+  - **Octa** *Notes, CC 46, 47, 49* Track 2: Mutes, Volumes, and Cues
+- *Channel 13*
+  - **Octa** *Notes, CC 46, 47, 49* Track 3: Mutes, Volumes, and Cues
+- *Channel 14*
+  - **Octa** *Notes, CC 46, 47, 49* Track 4: Mutes, Volumes, and Cues
+- *Channel 15*
+  - **Octa** *Notes, CC 46, 47, 49* Track 5: Mutes, Volumes, and Cues
+- *Channel 16*
+  - **Meta** *PC* DSPi Switch
+  - **Octa** *Notes, CC 46, 47, 49* Track 6: Mutes, Volumes, and Cues
 
 ## **i** Resources
 
