@@ -163,13 +163,14 @@ This allows the dbus-compiled jack server to run without a GUI running.
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git jack-rack pd-ggee mididings`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
 - guitarix is a guitar amp simulator
 - aj-snapshot is the automatic audio/midi auto connection daemon. May be able to replace this with `--jack-autoconnect` (and similar CLI flags) on guitarix and amsynth.
 - git to clone this repo
+- puredata and pd-ggee for MIDI translation and script launching on MIDI message
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
 
@@ -224,13 +225,13 @@ REALLY easy to do, actually. VERY well documented.
 `amsynth -x -mjack -aalsa -r48000 -c9 -p4`
 
 - -x is no gui
-- -mjack forces alsa midi
-- -ajack forces jack audio
+- -mjack forces jack midi
+- -alsa forces alsa audio
 - -c9 makes amSynth respond to midi channel 9
 - -p4 is max of 4 notes of polyphony
 - -r48000 runs amSynth at 48000 sample rate
 
-Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
+Also included amsynthSettings, contents can go right into `~/` for midi mapping (Line Number + 1 = Midi CC).
 
 ## **A:** Jenkins can do up to II5 for you :)
 
