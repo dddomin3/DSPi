@@ -1,0 +1,71 @@
+---
+
+# This playbook configures all local raspberry pi stuff.
+
+- name: apply common configuration to all nodes
+  hosts: dspi
+  remote_user: pi
+  tasks:
+  - name: ensure music packages are up to date and installed
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update-cache: true
+    with_items: 
+      - jackd2
+      - qjackctl
+      - guitarix
+      - aj-snapshot
+      - puredata
+      - git
+      - pd-ggee
+
+  - name: clone dspi git repo
+    git:
+      repo: https://github.com/dddomin3/DSPi.git
+      dest: ~/DSPi
+      refspec: master
+
+  # - name: set pi gpu mem to 16
+  #   become: true
+  #   shell: sed -e s/gpu_mem.*/gpu_mem=16/g /boot/config.txt #TODO: Not how this works
+
+  # - name: build amSynth #TODO: Only do this if necessary... like check if it's built first
+  #   tasks:
+  #   - name: clone amSynth git repo
+  #     git:
+  #       repo: https://github.com/amsynth/amsynth.git
+  #       dest: ~/amsynth
+  #       refspec: 'release-1.8.0' #TODO: latest?
+  #   - name: ensure compile prerequisites are installed
+  #     become: true
+  #     apt:
+  #       name: "{{ item }}"
+  #       state: latest
+  #     with_items:
+  #      - autoconf
+  #      - automake
+  #      - libtool
+  #      - pkg-config
+  #      - libgtk2.0-dev
+  #      - libgtkmm-2.4-dev
+  #      - libjack-jackd2-dev
+  #      - libasound2-dev
+  #      - liblash-compat-dev
+  #      - dssi-dev
+  #      - liblo-dev
+  #      - libsndfile-dev
+  #      - intltool
+  #      - pandoc
+  #      - autopoint
+  #   - name: compile amsynth
+  #     bash: "cd amsynth && ./autogen.sh && ./configure && make && sudo make install"
+  # - name: move jackboot into init.d
+  #   bash: "sudo cp ~/DSPi/bash/jackboot /etc/init.d/jackboot && sudo chmod 755 /etc/init.d/jackboot"
+  # - name: make sure jackstart.sh is executable
+  #   bash: "sudo chmod 755 ~/DSPi/bash/jackstart.sh"
+  # - name: make jackboot run on boot
+  #   bash: "sudo update-rc.d jackboot default"
+  # - name: ensure jackboot.log exists
+  #   bash: "touch jackboot.log"
