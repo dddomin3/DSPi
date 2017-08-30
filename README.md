@@ -163,13 +163,14 @@ This allows the dbus-compiled jack server to run without a GUI running.
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git jack-rack pd-ggee mididings`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
 - guitarix is a guitar amp simulator
 - aj-snapshot is the automatic audio/midi auto connection daemon. May be able to replace this with `--jack-autoconnect` (and similar CLI flags) on guitarix and amsynth.
 - git to clone this repo
+- puredata and pd-ggee for MIDI translation and script launching on MIDI message
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
 
@@ -209,7 +210,7 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I can't f
 
 ### **II9:** Pure Data
 
-jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script responds to values on MIDI:`CH16 CC 127`. Depending on the value, a specific program (or "DSPi") will be ran, and others will be killed:
+jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script responds to values on MIDI:`CH16 PC`. Depending on the value, a specific program (or "DSPi") will be ran, and others will be killed:
 
 - 0: Runs guitarix (Turns off wireless chip)
 - 64: Runs amsynth (Turns off wireless chip)
@@ -224,13 +225,13 @@ REALLY easy to do, actually. VERY well documented.
 `amsynth -x -mjack -aalsa -r48000 -c9 -p4`
 
 - -x is no gui
-- -mjack forces alsa midi
-- -ajack forces jack audio
+- -mjack forces jack midi
+- -alsa forces alsa audio
 - -c9 makes amSynth respond to midi channel 9
 - -p4 is max of 4 notes of polyphony
 - -r48000 runs amSynth at 48000 sample rate
 
-Also included amsynthSettings, contents can go right into `~/` for midi mapping described in `./amSynthMIDIChart.csv` file.
+Also included amsynthSettings, contents can go right into `~/` for midi mapping (Line Number + 1 = Midi CC).
 
 ## **A:** Jenkins can do up to II5 for you :)
 
@@ -238,6 +239,44 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
 1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. TODO: Should probably not give ALL these permission to jenkins...
+
+## **B:** MIDI Reference
+
+- *Channel 1*
+  - **MFTT** *CC 0-63* MIDI Out and Updates
+- *Channel 2*
+  - **MFTT** *CC 0-127* Switch Out and Indicator Light In
+- *Channel 3*
+  - **MFTT** *CC 0-63* Switch Animations & Brightness
+- *Channel 4*
+  - **MFTT** *CC 0-3, 8-31* Banks and Side Buttons
+- *Channel 5*
+  - **MFTT** *CC 0-63* Shift Out and Updates
+  - **Guitarix** *CC 64-103* Guitar Amp and EFX Params
+- *Channel 6*
+  - **MFTT** *CC 0-127* Ring Animations and Brightness
+- *Channel 7*
+  - **Octa** *Notes, CC 46, 47, 49* Track 7: Mutes, Volumes, and Cues
+- *Channel 8*
+  - **MFTT** *CC ??* Sequencer
+  - **Octa** *Notes, CC 46, 47, 49* Track 8: Mutes, Volumes, and Cues
+- *Channel 9*
+  - **amSynth** *Notes, CC 0-80, PC* Synth Params
+- *Channel 10*
+  - **Octa** Auto Channel
+- *Channel 11*
+  - **Octa** *Notes, CC 46, 47, 49, 112-119* Track 1: Mutes, Volumes, and Cues
+- *Channel 12*
+  - **Octa** *Notes, CC 46, 47, 49* Track 2: Mutes, Volumes, and Cues
+- *Channel 13*
+  - **Octa** *Notes, CC 46, 47, 49* Track 3: Mutes, Volumes, and Cues
+- *Channel 14*
+  - **Octa** *Notes, CC 46, 47, 49* Track 4: Mutes, Volumes, and Cues
+- *Channel 15*
+  - **Octa** *Notes, CC 46, 47, 49* Track 5: Mutes, Volumes, and Cues
+- *Channel 16*
+  - **Meta** *PC* DSPi Switch
+  - **Octa** *Notes, CC 46, 47, 49* Track 6: Mutes, Volumes, and Cues
 
 ## **i** Resources
 

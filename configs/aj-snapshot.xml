@@ -5,7 +5,7 @@
   </client>
   <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
-      <connection client="mididings" port="0" />
+      <connection client="Pure Data" port="0" />
     </port>
   </client>
   <client name="QuNexus">
@@ -25,30 +25,20 @@
   <client name="Pure Data">
     <!--
       Pure Data translates weird values from MIDI Fighter into useable values.
-      Much of these weird values occur on channel 14, some (Program Change) occur on Channel 16.
+      Leaving Defaults on MFT so we get Full Duplex support
     -->
     <port id="1">
       <connection client="amsynth" port="0" />
       <connection client="mio" port="0" />
-    </port>
-  </client>
-  <client name="mididings"> <!-- Clean MFT Signal -->
-    <!--
-      Mididings filters out all notes coming from MIDI Fighter Twister.
-      We don't use it for notes. We use it for CCs.
-    -->
-    <port id="1">
-      <connection client="Pure Data" port="0" />
-      <connection client="amsynth" port="0" />
-      <connection client="mio" port="0" />
+      <connection client="Midi Fighter Twister" port="0" /> <!-- Full Duplex right hurr -->
     </port>
   </client>
   <client name="amsynth">
     <!--
-      amSynth outputs values out to the MIDI Fighter on bank/program change
+      amSynth outputs values out to the MFT (through pd) on bank/program change
     -->
     <port id="1">
-      <connection client="Midi Fighter Twister" port="0" />
+      <connection client="Pure Data" port="0" />
     </port>
   </client>
 </alsa>
