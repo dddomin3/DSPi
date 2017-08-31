@@ -70,32 +70,35 @@
   #   bash: "touch jackboot.log"
 
   # - name: build amSynth #TODO: Only do this if necessary... like check if it's built first
-  #   tasks:
-  #   - name: clone amSynth git repo
-  #     git:
-  #       repo: https://github.com/amsynth/amsynth.git
-  #       dest: ~/amsynth
-  #       refspec: 'release-1.8.0' #TODO: latest?
-  #   - name: ensure compile prerequisites are installed
-  #     become: true
-  #     apt:
-  #       name: "{{ item }}"
-  #       state: latest
-  #     with_items:
-  #      - autoconf
-  #      - automake
-  #      - libtool
-  #      - pkg-config
-  #      - libgtk2.0-dev
-  #      - libgtkmm-2.4-dev
-  #      - libjack-jackd2-dev
-  #      - libasound2-dev
-  #      - liblash-compat-dev
-  #      - dssi-dev
-  #      - liblo-dev
-  #      - libsndfile-dev
-  #      - intltool
-  #      - pandoc
-  #      - autopoint
-  #   - name: compile amsynth
-  #     bash: "cd amsynth && ./autogen.sh && ./configure && make && sudo make install"
+    # tasks:
+  - name: clone amSynth git repo
+    git:
+      repo: https://github.com/amsynth/amsynth.git
+      dest: /home/pi/amsynth
+      refspec: 'release-1.8.0'
+  - name: ensure compile prerequisites are installed
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update-cache: true
+    with_items:
+      - autoconf
+      - automake
+      - libtool
+      - pkg-config
+      - libgtk2.0-dev
+      - libgtkmm-2.4-dev
+      - libjack-jackd2-dev
+      - libasound2-dev
+      - liblash-compat-dev
+      - dssi-dev
+      - liblo-dev
+      - libsndfile-dev
+      - intltool
+      - pandoc
+      - autopoint
+  - name: compile and install amsynth
+    shell: './autogen.sh && ./configure && make && sudo make install'
+    args:
+      chdir: /home/pi/amsynth
