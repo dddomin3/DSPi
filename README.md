@@ -254,6 +254,15 @@ Install ansible on your system.
 Go onto your pi, and add your jenkins/ansible machines ssh key to your pi
 
 <https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md>
+Might have to do:
+
+```bash
+eval `ssh-agent -s`
+ssh-add
+sudo reboot
+```
+
+But I'm not sure
 
 Now Jenkins (via ansible) should be able to enforce all configs on your pi for you :)
 
