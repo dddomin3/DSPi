@@ -2,7 +2,7 @@
 
 # This playbook configures all local raspberry pi stuff.
 
-- name: apply common configuration to all nodes
+- name: lets get dspi
   hosts: dspi
   remote_user: pi
   tasks:
@@ -27,9 +27,47 @@
       dest: ~/DSPi
       refspec: master
 
-  # - name: set pi gpu mem to 16
-  #   become: true
-  #   shell: sed -e s/gpu_mem.*/gpu_mem=16/g /boot/config.txt #TODO: Not how this works
+  - name: set pi gpu mem to 16
+    become: true
+    lineinfile:
+      path: /boot/config.txt
+      regexp: 'gpu_mem.*'
+      line: 'gpu_mem=16'
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: sync repo jackboot with init.d jackboot
+    become: true
+    copy:
+      src: '/home/pi/DSPi/bash/jackboot'
+      dest: '/etc/init.d/jackboot'
+      remote_src: true
+      mode: 0755
+      
+  - name: make sure jackstart.sh is executable
+    file:
+      path: '/home/pi/DSPi/bash/jackstart.sh'
+      mode: 0755
+      owner: pi
+      group: pi
+
+  - name: make jackboot run on boot
+    become: true
+    service:
+      name: jackboot
+      state: restarted
+
+  - name: ensure jackboot.log exists
+    become: true
+    file:
+      path: '/home/pi/DSPi/jackboot.log'
+      state: touch
+      mode: 0644
+      owner: root
+      group: root
+  # - name: ensure jackboot.log exists
+  #   bash: "touch jackboot.log"
 
   # - name: build amSynth #TODO: Only do this if necessary... like check if it's built first
   #   tasks:
@@ -61,11 +99,3 @@
   #      - autopoint
   #   - name: compile amsynth
   #     bash: "cd amsynth && ./autogen.sh && ./configure && make && sudo make install"
-  # - name: move jackboot into init.d
-  #   bash: "sudo cp ~/DSPi/bash/jackboot /etc/init.d/jackboot && sudo chmod 755 /etc/init.d/jackboot"
-  # - name: make sure jackstart.sh is executable
-  #   bash: "sudo chmod 755 ~/DSPi/bash/jackstart.sh"
-  # - name: make jackboot run on boot
-  #   bash: "sudo update-rc.d jackboot default"
-  # - name: ensure jackboot.log exists
-  #   bash: "touch jackboot.log"
