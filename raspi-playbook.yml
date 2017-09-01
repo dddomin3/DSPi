@@ -66,16 +66,16 @@
       mode: 0644
       owner: root
       group: root
-  # - name: ensure jackboot.log exists
-  #   bash: "touch jackboot.log"
 
-  # - name: build amSynth #TODO: Only do this if necessary... like check if it's built first
-    # tasks:
   - name: clone amSynth git repo
     git:
       repo: https://github.com/amsynth/amsynth.git
       dest: /home/pi/amsynth
       refspec: 'release-1.8.0'
+      notify:
+        - ensure compile prerequisites are installed
+        - compile and install amsynth
+  handlers:
   - name: ensure compile prerequisites are installed
     become: true
     apt:
