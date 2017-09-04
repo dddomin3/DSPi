@@ -54,6 +54,10 @@
 
   - name: make jackboot run on boot
     become: true
+    command: update-rc.d jackboot defaults
+
+  - name: restart jackboot
+    become: true
     service:
       name: jackboot
       state: restarted
@@ -63,18 +67,18 @@
     file:
       path: '/home/pi/DSPi/jackboot.log'
       state: touch
-      mode: 0644
+      mode: 0664
       owner: root
-      group: root
+      group: pi
 
   - name: clone amSynth git repo
     git:
       repo: https://github.com/amsynth/amsynth.git
       dest: /home/pi/amsynth
       refspec: 'release-1.8.0'
-      notify:
-        - ensure compile prerequisites are installed
-        - compile and install amsynth
+    notify:
+      - ensure compile prerequisites are installed
+      - compile and install amsynth
   handlers:
   - name: ensure compile prerequisites are installed
     become: true
