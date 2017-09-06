@@ -79,6 +79,23 @@
     notify:
       - ensure compile prerequisites are installed
       - compile and install amsynth
+
+  - name: copy amsynth configs
+    copy:
+      src: configs/amsynthSettings/
+      dest: /home/pi/
+      owner: pi
+      group: pi
+      mode: 0755
+
+  - name: copy guitarix configs
+    copy:
+      src: configs/.config
+      dest: /home/pi/
+      owner: pi
+      group: pi
+      mode: 0755
+
   handlers:
   - name: ensure compile prerequisites are installed
     become: true
