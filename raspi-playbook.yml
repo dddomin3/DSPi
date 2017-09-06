@@ -1,0 +1,108 @@
+---
+
+# This playbook configures all local raspberry pi stuff.
+
+- name: lets get dspi
+  hosts: dspi
+  remote_user: pi
+  tasks:
+  - name: ensure music packages are up to date and installed
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update-cache: true
+    with_items: 
+      - jackd2
+      - qjackctl
+      - guitarix
+      - aj-snapshot
+      - puredata
+      - git
+      - pd-ggee
+
+  - name: clone dspi git repo
+    git:
+      repo: https://github.com/dddomin3/DSPi.git
+      dest: ~/DSPi
+      refspec: master
+
+  - name: set pi gpu mem to 16
+    become: true
+    lineinfile:
+      path: /boot/config.txt
+      regexp: 'gpu_mem.*'
+      line: 'gpu_mem=16'
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: sync repo jackboot with init.d jackboot
+    become: true
+    copy:
+      src: '/home/pi/DSPi/bash/jackboot'
+      dest: '/etc/init.d/jackboot'
+      remote_src: true
+      mode: 0755
+      
+  - name: make sure jackstart.sh is executable
+    file:
+      path: '/home/pi/DSPi/bash/jackstart.sh'
+      mode: 0755
+      owner: pi
+      group: pi
+
+  - name: make jackboot run on boot
+    become: true
+    command: update-rc.d jackboot defaults
+
+  - name: restart jackboot
+    become: true
+    service:
+      name: jackboot
+      state: restarted
+
+  - name: ensure jackboot.log exists
+    become: true
+    file:
+      path: '/home/pi/DSPi/jackboot.log'
+      state: touch
+      mode: 0664
+      owner: root
+      group: pi
+
+  - name: clone amSynth git repo
+    git:
+      repo: https://github.com/amsynth/amsynth.git
+      dest: /home/pi/amsynth
+      refspec: 'release-1.8.0'
+    notify:
+      - ensure compile prerequisites are installed
+      - compile and install amsynth
+  handlers:
+  - name: ensure compile prerequisites are installed
+    become: true
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update-cache: true
+    with_items:
+      - autoconf
+      - automake
+      - libtool
+      - pkg-config
+      - libgtk2.0-dev
+      - libgtkmm-2.4-dev
+      - libjack-jackd2-dev
+      - libasound2-dev
+      - liblash-compat-dev
+      - dssi-dev
+      - liblo-dev
+      - libsndfile-dev
+      - intltool
+      - pandoc
+      - autopoint
+  - name: compile and install amsynth
+    shell: './autogen.sh && ./configure && make && sudo make install'
+    args:
+      chdir: /home/pi/amsynth
