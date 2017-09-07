@@ -98,6 +98,7 @@ make menuconfig # Need a large terminal
 
 # Kernel Features > Preemption Kernel (Low Latency Desktop)
 # CPU Power Management > Frequency Scaling > Performance
+# CPU Power Management > Tick Frequency > 250 MHz
 ```
 
 `make menuconfig` may fail if your terminal isn't maximized.
