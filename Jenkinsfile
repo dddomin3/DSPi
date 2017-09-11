@@ -37,6 +37,11 @@ pipeline {
                 name: 'wpa_supplicant'
               ],
               [
+                $class: 'FileParameterDefinition',
+                description: 'Upload a raspi image to push to sd card.',
+                name: 'raspiImage'
+              ],
+              [
                 $class: 'ChoiceParameterDefinition',
                 choices: 'basicRtKernelConfig\nfullRtKernelConfig',
                 description: 'Pick between pre-made kernel config files.',
@@ -104,6 +109,11 @@ pipeline {
           } else { echo 'Not cleaning previously built kernel.' }
         }
       }
+    }
+    stage('Copy Image') {
+      if (userInput['raspiImage']) {
+        sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
+      } else { echo "No raspiImage specified! Not copying raspiImage." }
     }
     stage('Clone') {
       steps {
