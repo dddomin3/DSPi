@@ -6,6 +6,22 @@
   hosts: dspi
   remote_user: pi
   tasks:
+  - name: ensure .ssh folder exists
+    file:
+      dest: /home/pi/.ssh
+      state: directory
+      mode: 0700
+      group: pi
+      owner: pi
+
+  - name: ensure id_rsa.pub is in authorized_hosts
+    copy:
+      src: ~/.ssh/id_rsa.pub
+      dest: /home/pi/.ssh/authorized_hosts
+      owner: pi
+      group: pi
+      mode: 0644
+
   - name: ensure music packages are up to date and installed
     become: true
     apt:
