@@ -239,7 +239,9 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 1. Set up jenkins to use `/bin/bash` for shell scripts. (Check in settings...)
 1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
-1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. TODO: Should probably not give ALL these permission to jenkins...
+1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. 
+
+> TODO: Should probably not give ALL these permission to jenkins...or use docker?
 
 ## **B:** Ansible can do the rest for you!
 
@@ -252,22 +254,13 @@ Install ansible on your system.
 192.168.x.y #ip address or hostname of your pi
 ```
 
-Go onto your pi, and add your jenkins/ansible machines ssh key to your pi
+run `ansible-playbooks raspi-playbook.yml -k`, supply pi password, and ansible will handle pushing your key from `~/.ssh/id_rsa.pub`
+
+If you don't have one, use `ssh-keygen` to generate one, and accept all defaults (No password, etc)
 
 <https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md>
-Might have to do:
 
-```bash
-eval `ssh-agent -s`
-ssh-add
-sudo reboot
-```
-
-But I'm not sure
-
-Now Jenkins (via ansible) should be able to enforce all configs on your pi for you :)
-
-Test connection by running the following command, and seeing a success
+Test connection by running the following command, and seeing the following response.
 
 ```bash
 cheekymusic@cheekymusic-Q550LF:~$ ansible all -m ping -u pi --private-key ~/.ssh/id_rsa.pub --become
