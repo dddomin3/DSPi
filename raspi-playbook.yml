@@ -26,6 +26,29 @@
       repo: https://github.com/dddomin3/DSPi.git
       dest: ~/DSPi
       refspec: master
+  
+  - name: ensure audio group is present
+    become: true
+    group:
+      name: audio
+      state: present
+
+  - name: ensure pi is in audio group
+    become: true
+    user:
+      name: pi
+      append: yes
+      groups: pi, audio, sudo, i2c
+
+  - name: ensure audio.conf is in limits.d
+    become: true
+    copy:
+      src: '/home/pi/DSPi/configs/audio.conf'
+      dest: '/etc/security/limits.d'
+      remote_src: true
+      mode: 0644
+      owner: root
+      group: root
 
   - name: set pi gpu mem to 16
     become: true
