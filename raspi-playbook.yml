@@ -83,6 +83,9 @@
       dest: '/etc/init.d/jackboot'
       remote_src: true
       mode: 0755
+    notify:
+      - make jackboot run on boot
+      - restart jackboot
       
   - name: make sure jackstart.sh is executable
     file:
@@ -90,16 +93,6 @@
       mode: 0755
       owner: pi
       group: pi
-
-  - name: make jackboot run on boot
-    become: true
-    command: update-rc.d jackboot defaults
-
-  - name: restart jackboot
-    become: true
-    service:
-      name: jackboot
-      state: restarted
 
   - name: ensure jackboot.log exists
     become: true
@@ -162,3 +155,13 @@
     shell: './autogen.sh && ./configure && make && sudo make install'
     args:
       chdir: /home/pi/amsynth
+
+  - name: make jackboot run on boot
+    become: true
+    command: update-rc.d jackboot defaults
+
+  - name: restart jackboot
+    become: true
+    service:
+      name: jackboot
+      state: restarted
