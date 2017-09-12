@@ -243,6 +243,8 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 
 > TODO: Should probably not give ALL these permission to jenkins...or use docker?
 
+*WARNING:* Jenkins **will not** backup your SD Card. Consider doing it yourself. :)
+
 ## **B:** Ansible can do the rest for you!
 
 Install ansible on your system.
