@@ -5,7 +5,7 @@
   </client>
   <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
-      <connection client="Pure Data" port="0" />
+      <connection client="Pure Data" port="1" />
     </port>
   </client>
   <client name="QuNexus">
@@ -27,9 +27,11 @@
       Pure Data translates weird values from MIDI Fighter into useable values.
       Leaving Defaults on MFT so we get Full Duplex support
     -->
-    <port id="1">
+    <port id="2">
       <connection client="amsynth" port="0" />
       <connection client="mio" port="0" />
+    </port>
+    <port id="3">    
       <connection client="Midi Fighter Twister" port="0" /> <!-- Full Duplex right hurr -->
     </port>
   </client>
