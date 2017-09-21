@@ -36,6 +36,7 @@
       - puredata
       - git
       - pd-ggee
+      - liblo-tools
 
   - name: clone dspi git repo
     git:
