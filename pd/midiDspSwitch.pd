@@ -190,7 +190,7 @@
 #X obj 8 904 select 127;
 #X obj 8 931 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
 ;
-#X obj 8 876 ctlin 26 20;
+#X obj 8 876 ctlin 14 20;
 #X text 8 847 Toggle Record;
 #X obj 8 956 select 1 0;
 #X obj 12 1007 s recStop;
@@ -204,7 +204,7 @@
 #X obj 732 247 ggee/shell;
 #X obj 732 269 symbol;
 #X symbolatom 732 291 10 0 0 0 - - -, f 10;
-#X msg 732 225 oscsend localhost 777 /jack_capture/stop;
+#X msg 732 225 oscsend localhost 7777 /jack_capture/stop;
 #X text 119 431 LH1 Hard Sync;
 #X msg 579 156 127;
 #X msg 698 221 0;
