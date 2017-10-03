@@ -10,13 +10,13 @@ if [ "${#1}" -gt "0" ]; then
 fi
 
 [ $dspi == 'guitarix' ] && (
-  jackd -P80 -p16 -S -t2000 -dalsa -dhw:CODEC,0 -p64 -n6 -r48000 -s -S -Xseq -D >> /home/pi/DSPi/jackboot.log &
+  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:CODEC,0 -r48000 -p64 -n6 -s -S -D -Xnone >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
   sleep 15
-  guitarix --nogui >> /home/pi/DSPi/jackboot.log &
+  guitarix --nogui -t >> /home/pi/DSPi/jackboot.log &
   chrt -a -r -p 75 $! &
   echo "nernerner"
-  sudo ifdown wlan0 &
+  # sudo ifdown wlan0 &
   exit 0;
 )
 [ $dspi == 'amsynth' ] && (
