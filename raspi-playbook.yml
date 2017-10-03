@@ -36,6 +36,7 @@
       - puredata
       - git
       - pd-ggee
+      - a2jmidid
 
   - name: clone dspi git repo
     git:
