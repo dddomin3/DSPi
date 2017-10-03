@@ -13,11 +13,10 @@ fi
 [ $dspi == 'guitarix' ] && (
   jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:CODEC,0 -r48000 -p64 -n6 -s -S -D -Xnone >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
-  sleep 10
-  a2jmidid &
-  sleep 10
+  sleep 15
   guitarix --nogui -t >> /home/pi/DSPi/jackboot.log &
-  chrt -a -r -p 75 $! &
+  sleep 25
+  a2jmidid &
   echo "nernerner"
   sudo ifdown wlan0 &
   exit 0;
