@@ -44,24 +44,12 @@
     </port>
   </client>
 </alsa>
-<!-- Guitarix should do this itself...
 <jack>
-  <client name="amsynth">
-    <port name="L out">
-      <connection port="system:playback_1" />
-    </port>
-    <port name="R out">
-      <connection port="system:playback_2" />
-    </port>
-    <port name="midi_out" />
-  </client>
   <client name="system">
     <port name="capture_1">
       <connection port="gx_head_amp:in_0" />
     </port>
-    <port name="midi_capture_1">
-      <connection port="gx_head_amp:midi_in_1" />
-    </port>
+    <port name="capture_2" />
   </client>
   <client name="gx_head_amp">
     <port name="out_0">
@@ -77,4 +65,4 @@
     </port>
   </client>
 </jack>
--->
+

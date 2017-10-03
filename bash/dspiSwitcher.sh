@@ -10,7 +10,7 @@ if [ "${#1}" -gt "0" ]; then
 fi
 
 [ $dspi == 'guitarix' ] && (
-  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:CODEC,0 -r48000 -p64 -n6 -s -S -D -Xnone >> /home/pi/DSPi/jackboot.log &
+  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:CODEC,0 -r48000 -p64 -n6 -s -S -D -Xseq >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
   sleep 15
   guitarix --nogui -t >> /home/pi/DSPi/jackboot.log &
