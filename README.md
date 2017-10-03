@@ -164,7 +164,7 @@ This allows the dbus-compiled jack server to run without a GUI running.
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee a2jmidid`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
@@ -172,6 +172,7 @@ Install this stuff!
 - aj-snapshot is the automatic audio/midi auto connection daemon. May be able to replace this with `--jack-autoconnect` (and similar CLI flags) on guitarix and amsynth.
 - git to clone this repo
 - puredata and pd-ggee for MIDI translation and script launching on MIDI message
+- a2jmidid for alsa to jack midi bridging
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
 

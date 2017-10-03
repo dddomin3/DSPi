@@ -6,6 +6,7 @@
   <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
       <connection client="Pure Data" port="1" />
+      <connection client="Midi Through" port="0" />
     </port>
   </client>
   <client name="QuNexus">
@@ -51,11 +52,13 @@
     </port>
     <port name="capture_2" />
   </client>
+
   <client name="gx_head_amp">
     <port name="out_0">
       <connection port="gx_head_fx:in_0" />
     </port>
   </client>
+
   <client name="gx_head_fx">
     <port name="out_0">
       <connection port="system:playback_1" />
@@ -64,5 +67,11 @@
       <connection port="system:playback_2" />
     </port>
   </client>
-</jack>
 
+  <client name="a2j">
+    <port name="Midi Through [14] (capture): Midi Through Port-0">
+      <connection port="gx_head_amp:midi_in_1" />
+    </port>
+  </client>
+
+</jack>
