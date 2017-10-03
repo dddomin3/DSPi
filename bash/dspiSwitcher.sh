@@ -18,7 +18,7 @@ fi
   guitarix --nogui -t >> /home/pi/DSPi/jackboot.log &
   chrt -a -r -p 75 $! &
   echo "nernerner"
-  # sudo ifdown wlan0 &
+  sudo ifdown wlan0 &
   exit 0;
 )
 [ $dspi == 'amsynth' ] && (
