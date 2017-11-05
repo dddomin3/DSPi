@@ -37,6 +37,7 @@
       - git
       - pd-ggee
       - a2jmidid
+      - mididings
 
   - name: clone dspi git repo
     git:
