@@ -30,8 +30,10 @@ def guitarixShiftDeOffset(e):
   e.ctrl = e.ctrl - 42
   return e
 
-mutes = [False,False,False,False,False,False,False,False]
-midiMutes = [False,False,False,False,False,False,False,False]
+mutes = {
+  'volume': [False,False,False,False,False,False,False,False],
+  'midi': [False,False,False,False,False,False,False,False],
+}
 ccToOctaTrack = {
   16:1,17:5,
   20:2,21:6,
@@ -39,15 +41,58 @@ ccToOctaTrack = {
   28:4,29:8,
 }
 octaTrackToCc = [16,20,24,28,17,21,25,29]
-ccToOctaMidiTrack = {
+mftCcToOctaMidiTrack = {
   18:1,19:5,
   22:2,23:6,
   26:3,27:7,
   30:4,31:8,
 }
-octaMidiTrackToCc = [18,22,26,30,19,23,27,31]
+octaMidiTrackToMftCc = [18,22,26,30,19,23,27,31]
+octaCcToOctaMidiTrack = {
+  112:1,116:5,
+  113:2,117:6,
+  114:3,118:7,
+  115:4,119:8,
+}
+octaMidiTrackToOctaCc = [112,113,114,115,116,117,118,119]
 onColor = 40
 offColor = 85
+
+def octaVolumeMuteFix(e):
+  e.channel = ccToOctaTrack[e.ctrl]
+  mutes.volume[e.channel] = True if mutes.volume[e.channel] else False
+  e.value = mutes.volume[e.channel] * 255
+  e.port = "octatrack"
+  e.ctrl = 49
+  return e
+def octaMidiMuteFix(e):
+  e.channel = 1
+  mutes.midi[e.channel] = True if mutes.midi[e.channel] else False
+  e.value = mutes.midi[e.channel] * 255
+  e.port = "octatrack"
+  e.ctrl = octaMidiTrackToOctaCc[mftCcToOctaMidiTrack[e.ctrl]]
+  return e
+
+def mftVolumeMuteFix(e):
+  mutes.volume[e.channel] = True if mutes.volume[e.channel] else False
+  if(mutes.volume[e.channel]):
+    e.value = onColor
+  else:
+    e.value = offColor
+  e.port = "MFT"
+  e.ctrl = octaTrackToCc[e.channel]
+  e.channel = 2
+  return e
+def mftMidiMuteFix(e):
+  mutes.midi[e.channel] = True if mutes.midi[e.channel] else False
+  if(mutes.midi[e.channel]):
+    e.value = onColor
+  else:
+    e.value = offColor
+  e.port = "MFT"
+  e.ctrl = octaMidiTrackToMftCc[octaCcToOctaMidiTrack[e.ctrl]]
+  e.channel = 2
+  return e
 
 run(
   [  
@@ -55,29 +100,29 @@ run(
       ChannelFilter(1) >> [ #MFT Outward
         CtrlFilter(range(0,16)) >> CtrlMap(0,80) >> Ctrl('amSynth', 9, EVENT_CTRL, EVENT_VALUE),
 
-        CtrlFilter(16) >> Ctrl('octatrack', 1, 47, EVENT_VALUE), CtrlFilter(17) >> Ctrl('octatrack', 5, 47, EVENT_VALUE),
-        CtrlFilter(20) >> Ctrl('octatrack', 2, 47, EVENT_VALUE), CtrlFilter(21) >> Ctrl('octatrack', 6, 47, EVENT_VALUE),
-        CtrlFilter(24) >> Ctrl('octatrack', 3, 47, EVENT_VALUE), CtrlFilter(25) >> Ctrl('octatrack', 7, 47, EVENT_VALUE),
-        CtrlFilter(28) >> Ctrl('octatrack', 4, 47, EVENT_VALUE), CtrlFilter(29) >> Ctrl('octatrack', 8, 47, EVENT_VALUE),
+        CtrlFilter(16) >> Ctrl('octatrack', 1, 46, EVENT_VALUE), CtrlFilter(17) >> Ctrl('octatrack', 5, 46, EVENT_VALUE),
+        CtrlFilter(20) >> Ctrl('octatrack', 2, 46, EVENT_VALUE), CtrlFilter(21) >> Ctrl('octatrack', 6, 46, EVENT_VALUE),
+        CtrlFilter(24) >> Ctrl('octatrack', 3, 46, EVENT_VALUE), CtrlFilter(25) >> Ctrl('octatrack', 7, 46, EVENT_VALUE),
+        CtrlFilter(28) >> Ctrl('octatrack', 4, 46, EVENT_VALUE), CtrlFilter(29) >> Ctrl('octatrack', 8, 46, EVENT_VALUE),
 
-        CtrlFilter(18) >> Ctrl('octatrack', 1, 48, EVENT_VALUE), CtrlFilter(19) >> Ctrl('octatrack', 5, 48, EVENT_VALUE),
-        CtrlFilter(22) >> Ctrl('octatrack', 2, 48, EVENT_VALUE), CtrlFilter(23) >> Ctrl('octatrack', 6, 48, EVENT_VALUE),
-        CtrlFilter(26) >> Ctrl('octatrack', 3, 48, EVENT_VALUE), CtrlFilter(27) >> Ctrl('octatrack', 7, 48, EVENT_VALUE),
-        CtrlFilter(30) >> Ctrl('octatrack', 4, 48, EVENT_VALUE), CtrlFilter(31) >> Ctrl('octatrack', 8, 48, EVENT_VALUE),
+        CtrlFilter(18) >> Ctrl('octatrack', 1, 47, EVENT_VALUE), CtrlFilter(19) >> Ctrl('octatrack', 5, 47, EVENT_VALUE),
+        CtrlFilter(22) >> Ctrl('octatrack', 2, 47, EVENT_VALUE), CtrlFilter(23) >> Ctrl('octatrack', 6, 47, EVENT_VALUE),
+        CtrlFilter(26) >> Ctrl('octatrack', 3, 47, EVENT_VALUE), CtrlFilter(27) >> Ctrl('octatrack', 7, 47, EVENT_VALUE),
+        CtrlFilter(30) >> Ctrl('octatrack', 4, 47, EVENT_VALUE), CtrlFilter(31) >> Ctrl('octatrack', 8, 47, EVENT_VALUE),
 
         CtrlFilter(range(48,64)) >> Process(guitarixOffset) >> Ctrl('guitarix', 11, EVENT_CTRL, EVENT_VALUE),
       ],
       ChannelFilter(2) >> [ #MFT Switches Outward
         # TODO: implement switch fix...
-        CtrlFilter(16) >> Ctrl('octatrack', 1, 49, EVENT_VALUE), CtrlFilter(17) >> Ctrl('octatrack', 5, 49, EVENT_VALUE),
-        CtrlFilter(20) >> Ctrl('octatrack', 2, 49, EVENT_VALUE), CtrlFilter(21) >> Ctrl('octatrack', 6, 49, EVENT_VALUE),
-        CtrlFilter(24) >> Ctrl('octatrack', 3, 49, EVENT_VALUE), CtrlFilter(25) >> Ctrl('octatrack', 7, 49, EVENT_VALUE),
-        CtrlFilter(28) >> Ctrl('octatrack', 4, 49, EVENT_VALUE), CtrlFilter(29) >> Ctrl('octatrack', 8, 49, EVENT_VALUE),
+        CtrlFilter(16) >> Process(octaVolumeMuteFix), CtrlFilter(17) >> Process(octaVolumeMuteFix),
+        CtrlFilter(20) >> Process(octaVolumeMuteFix), CtrlFilter(21) >> Process(octaVolumeMuteFix),
+        CtrlFilter(24) >> Process(octaVolumeMuteFix), CtrlFilter(25) >> Process(octaVolumeMuteFix),
+        CtrlFilter(28) >> Process(octaVolumeMuteFix), CtrlFilter(29) >> Process(octaVolumeMuteFix),
 
-        CtrlFilter(18) >> Ctrl('octatrack', 1, 112, EVENT_VALUE), CtrlFilter(19) >> Ctrl('octatrack', 1, 116, EVENT_VALUE),
-        CtrlFilter(22) >> Ctrl('octatrack', 1, 113, EVENT_VALUE), CtrlFilter(23) >> Ctrl('octatrack', 1, 117, EVENT_VALUE),
-        CtrlFilter(26) >> Ctrl('octatrack', 1, 114, EVENT_VALUE), CtrlFilter(27) >> Ctrl('octatrack', 1, 118, EVENT_VALUE),
-        CtrlFilter(30) >> Ctrl('octatrack', 1, 115, EVENT_VALUE), CtrlFilter(31) >> Ctrl('octatrack', 1, 119, EVENT_VALUE),
+        CtrlFilter(18) >> Process(octaMidiMuteFix), CtrlFilter(19) >> Process(octaMidiMuteFix),
+        CtrlFilter(22) >> Process(octaMidiMuteFix), CtrlFilter(23) >> Process(octaMidiMuteFix),
+        CtrlFilter(26) >> Process(octaMidiMuteFix), CtrlFilter(27) >> Process(octaMidiMuteFix),
+        CtrlFilter(30) >> Process(octaMidiMuteFix), CtrlFilter(31) >> Process(octaMidiMuteFix),
       ],
       ChannelFilter(5) >> [ #Shifted MFT Outward
         CtrlFilter(range(0,12)) >> Process(amSynthOffset) >> Ctrl('amSynth', 9, EVENT_CTRL, EVENT_VALUE),
@@ -101,26 +146,26 @@ run(
     PortFilter('octatrack') >> [
       ChannelFilter(1) >> [ #MFT Inward
         # MIDI Mutes
-        CtrlFilter(112) >> Ctrl('MFT', 2, 18, EVENT_VALUE), CtrlFilter(116) >> Ctrl('MFT', 2, 19, EVENT_VALUE),
-        CtrlFilter(113) >> Ctrl('MFT', 2, 22, EVENT_VALUE), CtrlFilter(117) >> Ctrl('MFT', 2, 23, EVENT_VALUE),
-        CtrlFilter(114) >> Ctrl('MFT', 2, 26, EVENT_VALUE), CtrlFilter(118) >> Ctrl('MFT', 2, 27, EVENT_VALUE),
-        CtrlFilter(115) >> Ctrl('MFT', 2, 30, EVENT_VALUE), CtrlFilter(119) >> Ctrl('MFT', 2, 31, EVENT_VALUE),
+        CtrlFilter(112) >> Process(mftMidiMuteFix), CtrlFilter(116) >> Process(mftMidiMuteFix),
+        CtrlFilter(113) >> Process(mftMidiMuteFix), CtrlFilter(117) >> Process(mftMidiMuteFix),
+        CtrlFilter(114) >> Process(mftMidiMuteFix), CtrlFilter(118) >> Process(mftMidiMuteFix),
+        CtrlFilter(115) >> Process(mftMidiMuteFix), CtrlFilter(119) >> Process(mftMidiMuteFix),
       ],
       CtrlFilter(49) >> [
         # Mutes
-        ChannelFilter(1) >> Ctrl('MFT', 2, 16, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFT', 2, 17, EVENT_VALUE),
-        ChannelFilter(2) >> Ctrl('MFT', 2, 20, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFT', 2, 21, EVENT_VALUE),
-        ChannelFilter(3) >> Ctrl('MFT', 2, 24, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFT', 2, 25, EVENT_VALUE),
-        ChannelFilter(4) >> Ctrl('MFT', 2, 28, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFT', 2, 29, EVENT_VALUE),
+        ChannelFilter(1) >> Process(mftVolumeMuteFix), ChannelFilter(5) >> Process(mftVolumeMuteFix),
+        ChannelFilter(2) >> Process(mftVolumeMuteFix), ChannelFilter(6) >> Process(mftVolumeMuteFix),
+        ChannelFilter(3) >> Process(mftVolumeMuteFix), ChannelFilter(7) >> Process(mftVolumeMuteFix),
+        ChannelFilter(4) >> Process(mftVolumeMuteFix), ChannelFilter(8) >> Process(mftVolumeMuteFix),
       ],
-      CtrlFilter(47) >> [
+      CtrlFilter(46) >> [
         # Volume
         ChannelFilter(1) >> Ctrl('MFT', 1, 16, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFT', 1, 17, EVENT_VALUE),
         ChannelFilter(2) >> Ctrl('MFT', 1, 20, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFT', 1, 21, EVENT_VALUE),
         ChannelFilter(3) >> Ctrl('MFT', 1, 24, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFT', 1, 25, EVENT_VALUE),
         ChannelFilter(4) >> Ctrl('MFT', 1, 28, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFT', 1, 29, EVENT_VALUE),
       ],
-      CtrlFilter(48) >> [
+      CtrlFilter(47) >> [
         # Cue Volume
         ChannelFilter(1) >> Ctrl('MFT', 1, 18, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFT', 1, 19, EVENT_VALUE),
         ChannelFilter(2) >> Ctrl('MFT', 1, 22, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFT', 1, 23, EVENT_VALUE),
