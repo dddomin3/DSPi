@@ -31,8 +31,8 @@ def guitarixShiftDeOffset(e):
   return e
 
 mutes = {
-  'volume': [False,False,False,False,False,False,False,False],
-  'midi': [False,False,False,False,False,False,False,False],
+  'volume': [False, False,False,False,False,False,False,False,False],
+  'midi': [False, False,False,False,False,False,False,False,False],
 }
 ccToOctaTrack = {
   16:1,17:5,
@@ -40,21 +40,21 @@ ccToOctaTrack = {
   24:3,25:7,
   28:4,29:8,
 }
-octaTrackToCc = [16,20,24,28,17,21,25,29]
+octaTrackToCc = [0,16,20,24,28,17,21,25,29]
 mftCcToOctaMidiTrack = {
   18:1,19:5,
   22:2,23:6,
   26:3,27:7,
   30:4,31:8,
 }
-octaMidiTrackToMftCc = [18,22,26,30,19,23,27,31]
+octaMidiTrackToMftCc = [0,18,22,26,30,19,23,27,31]
 octaCcToOctaMidiTrack = {
   112:1,116:5,
   113:2,117:6,
   114:3,118:7,
   115:4,119:8,
 }
-octaMidiTrackToOctaCc = [112,113,114,115,116,117,118,119]
+octaMidiTrackToOctaCc = [0,112,113,114,115,116,117,118,119]
 onColor = 40
 offColor = 85
 
