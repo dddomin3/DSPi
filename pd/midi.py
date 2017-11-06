@@ -60,36 +60,32 @@ offColor = 85
 
 def octaVolumeMuteFix(e):
   e.channel = ccToOctaTrack[e.ctrl]
-  mutes.volume[e.channel] = True if mutes.volume[e.channel] else False
-  e.value = mutes.volume[e.channel] * 255
-  e.port = "octatrack"
+  mutes['volume'][e.channel] = True if mutes['volume'][e.channel] else False
+  e.value = mutes['volume'][e.channel] * 255
   e.ctrl = 49
   return e
 def octaMidiMuteFix(e):
   e.channel = 1
-  mutes.midi[e.channel] = True if mutes.midi[e.channel] else False
-  e.value = mutes.midi[e.channel] * 255
-  e.port = "octatrack"
+  mutes['midi'][e.channel] = True if mutes['midi'][e.channel] else False
+  e.value = mutes['midi'][e.channel] * 255
   e.ctrl = octaMidiTrackToOctaCc[mftCcToOctaMidiTrack[e.ctrl]]
   return e
 
 def mftVolumeMuteFix(e):
-  mutes.volume[e.channel] = True if mutes.volume[e.channel] else False
-  if(mutes.volume[e.channel]):
+  mutes['volume'][e.channel] = True if mutes['volume'][e.channel] else False
+  if(mutes['volume'][e.channel]):
     e.value = onColor
   else:
     e.value = offColor
-  e.port = "MFT"
   e.ctrl = octaTrackToCc[e.channel]
   e.channel = 2
   return e
 def mftMidiMuteFix(e):
-  mutes.midi[e.channel] = True if mutes.midi[e.channel] else False
-  if(mutes.midi[e.channel]):
+  mutes['midi'][e.channel] = True if mutes['midi'][e.channel] else False
+  if(mutes['midi'][e.channel]):
     e.value = onColor
   else:
     e.value = offColor
-  e.port = "MFT"
   e.ctrl = octaMidiTrackToMftCc[octaCcToOctaMidiTrack[e.ctrl]]
   e.channel = 2
   return e
@@ -114,15 +110,15 @@ run(
       ],
       ChannelFilter(2) >> [ #MFT Switches Outward
         # TODO: implement switch fix...
-        CtrlFilter(16) >> Process(octaVolumeMuteFix), CtrlFilter(17) >> Process(octaVolumeMuteFix),
-        CtrlFilter(20) >> Process(octaVolumeMuteFix), CtrlFilter(21) >> Process(octaVolumeMuteFix),
-        CtrlFilter(24) >> Process(octaVolumeMuteFix), CtrlFilter(25) >> Process(octaVolumeMuteFix),
-        CtrlFilter(28) >> Process(octaVolumeMuteFix), CtrlFilter(29) >> Process(octaVolumeMuteFix),
+        CtrlFilter(16) >> Process(octaVolumeMuteFix) >> Port('octatrack'), CtrlFilter(17) >> Process(octaVolumeMuteFix) >> Port('octatrack'),
+        CtrlFilter(20) >> Process(octaVolumeMuteFix) >> Port('octatrack'), CtrlFilter(21) >> Process(octaVolumeMuteFix) >> Port('octatrack'),
+        CtrlFilter(24) >> Process(octaVolumeMuteFix) >> Port('octatrack'), CtrlFilter(25) >> Process(octaVolumeMuteFix) >> Port('octatrack'),
+        CtrlFilter(28) >> Process(octaVolumeMuteFix) >> Port('octatrack'), CtrlFilter(29) >> Process(octaVolumeMuteFix) >> Port('octatrack'),
 
-        CtrlFilter(18) >> Process(octaMidiMuteFix), CtrlFilter(19) >> Process(octaMidiMuteFix),
-        CtrlFilter(22) >> Process(octaMidiMuteFix), CtrlFilter(23) >> Process(octaMidiMuteFix),
-        CtrlFilter(26) >> Process(octaMidiMuteFix), CtrlFilter(27) >> Process(octaMidiMuteFix),
-        CtrlFilter(30) >> Process(octaMidiMuteFix), CtrlFilter(31) >> Process(octaMidiMuteFix),
+        CtrlFilter(18) >> Process(octaMidiMuteFix) >> Port('octatrack'), CtrlFilter(19) >> Process(octaMidiMuteFix) >> Port('octatrack'),
+        CtrlFilter(22) >> Process(octaMidiMuteFix) >> Port('octatrack'), CtrlFilter(23) >> Process(octaMidiMuteFix) >> Port('octatrack'),
+        CtrlFilter(26) >> Process(octaMidiMuteFix) >> Port('octatrack'), CtrlFilter(27) >> Process(octaMidiMuteFix) >> Port('octatrack'),
+        CtrlFilter(30) >> Process(octaMidiMuteFix) >> Port('octatrack'), CtrlFilter(31) >> Process(octaMidiMuteFix) >> Port('octatrack'),
       ],
       ChannelFilter(5) >> [ #Shifted MFT Outward
         CtrlFilter(range(0,12)) >> Process(amSynthOffset) >> Ctrl('amSynth', 9, EVENT_CTRL, EVENT_VALUE),
@@ -146,17 +142,17 @@ run(
     PortFilter('octatrack') >> [
       ChannelFilter(1) >> [ #MFT Inward
         # MIDI Mutes
-        CtrlFilter(112) >> Process(mftMidiMuteFix), CtrlFilter(116) >> Process(mftMidiMuteFix),
-        CtrlFilter(113) >> Process(mftMidiMuteFix), CtrlFilter(117) >> Process(mftMidiMuteFix),
-        CtrlFilter(114) >> Process(mftMidiMuteFix), CtrlFilter(118) >> Process(mftMidiMuteFix),
-        CtrlFilter(115) >> Process(mftMidiMuteFix), CtrlFilter(119) >> Process(mftMidiMuteFix),
+        CtrlFilter(112) >> Process(mftMidiMuteFix) >> Port('MFT'), CtrlFilter(116) >> Process(mftMidiMuteFix) >> Port('MFT'),
+        CtrlFilter(113) >> Process(mftMidiMuteFix) >> Port('MFT'), CtrlFilter(117) >> Process(mftMidiMuteFix) >> Port('MFT'),
+        CtrlFilter(114) >> Process(mftMidiMuteFix) >> Port('MFT'), CtrlFilter(118) >> Process(mftMidiMuteFix) >> Port('MFT'),
+        CtrlFilter(115) >> Process(mftMidiMuteFix) >> Port('MFT'), CtrlFilter(119) >> Process(mftMidiMuteFix) >> Port('MFT'),
       ],
       CtrlFilter(49) >> [
         # Mutes
-        ChannelFilter(1) >> Process(mftVolumeMuteFix), ChannelFilter(5) >> Process(mftVolumeMuteFix),
-        ChannelFilter(2) >> Process(mftVolumeMuteFix), ChannelFilter(6) >> Process(mftVolumeMuteFix),
-        ChannelFilter(3) >> Process(mftVolumeMuteFix), ChannelFilter(7) >> Process(mftVolumeMuteFix),
-        ChannelFilter(4) >> Process(mftVolumeMuteFix), ChannelFilter(8) >> Process(mftVolumeMuteFix),
+        ChannelFilter(1) >> Process(mftVolumeMuteFix) >> Port('MFT'), ChannelFilter(5) >> Process(mftVolumeMuteFix) >> Port('MFT'),
+        ChannelFilter(2) >> Process(mftVolumeMuteFix) >> Port('MFT'), ChannelFilter(6) >> Process(mftVolumeMuteFix) >> Port('MFT'),
+        ChannelFilter(3) >> Process(mftVolumeMuteFix) >> Port('MFT'), ChannelFilter(7) >> Process(mftVolumeMuteFix) >> Port('MFT'),
+        ChannelFilter(4) >> Process(mftVolumeMuteFix) >> Port('MFT'), ChannelFilter(8) >> Process(mftVolumeMuteFix) >> Port('MFT'),
       ],
       CtrlFilter(46) >> [
         # Volume
