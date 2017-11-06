@@ -60,32 +60,26 @@ offColor = 85
 
 def octaVolumeMuteFix(e):
   e.channel = ccToOctaTrack[e.ctrl]
-  mutes['volume'][e.channel] = True if mutes['volume'][e.channel] else False
+  mutes['volume'][e.channel] = not mutes['volume'][e.channel]
   e.value = mutes['volume'][e.channel] * 255
   e.ctrl = 49
   return e
 def octaMidiMuteFix(e):
   e.channel = 1
-  mutes['midi'][e.channel] = True if mutes['midi'][e.channel] else False
+  mutes['midi'][e.channel] = not mutes['midi'][e.channel]
   e.value = mutes['midi'][e.channel] * 255
   e.ctrl = octaMidiTrackToOctaCc[mftCcToOctaMidiTrack[e.ctrl]]
   return e
 
 def mftVolumeMuteFix(e):
-  mutes['volume'][e.channel] = True if mutes['volume'][e.channel] else False
-  if(mutes['volume'][e.channel]):
-    e.value = onColor
-  else:
-    e.value = offColor
+  mutes['volume'][e.channel] = not mutes['volume'][e.channel]
+  e.value = onColor if mutes['volume'][e.channel] else offColor
   e.ctrl = octaTrackToCc[e.channel]
   e.channel = 2
   return e
 def mftMidiMuteFix(e):
-  mutes['midi'][e.channel] = True if mutes['midi'][e.channel] else False
-  if(mutes['midi'][e.channel]):
-    e.value = onColor
-  else:
-    e.value = offColor
+  mutes['midi'][e.channel] = not mutes['midi'][e.channel]
+  e.value = onColor if mutes['midi'][e.channel] else offColor
   e.ctrl = octaMidiTrackToMftCc[octaCcToOctaMidiTrack[e.ctrl]]
   e.channel = 2
   return e
