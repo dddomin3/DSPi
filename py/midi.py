@@ -80,7 +80,6 @@ class MuteFix:
       klass.volumeMutes[octaTrack-1] * 127,
     )
     print(klass.volumeMutes,klass.midiMutes)
-    print(in_ports(),out_ports())
     return [mftOut, octaOut]
   
   @classmethod
@@ -103,7 +102,6 @@ class MuteFix:
     )
 
     print(klass.volumeMutes,klass.midiMutes)
-    print(in_ports(),out_ports())
     return [mftOut, octaOut]
   
   @classmethod
@@ -124,7 +122,6 @@ class MuteFix:
       klass.volumeMutes[octaTrack-1] * 127,
     )
     print(klass.volumeMutes,klass.midiMutes)
-    print(in_ports(),out_ports())
     return [mftOut, octaOut]
   
   @classmethod
@@ -147,13 +144,17 @@ class MuteFix:
     )
 
     print(klass.volumeMutes,klass.midiMutes)
-    print(in_ports(),out_ports())
     return [mftOut, octaOut]
 
 fixer = MuteFix()
 
 run(
-  [  
+  [
+    ChannelFilter(16) >> [ # Global MIDI DSPi Program Change
+      ProgramFilter(1) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'),
+      ProgramFilter(64) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
+      ProgramFilter(128) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh debug'),
+    ],
     PortFilter('MFTIn') >> [
       ChannelFilter(1) >> [ #MFT Outward
         CtrlFilter(range(0,16)) >> CtrlMap(0,80) >> Ctrl('amSynthOut', 9, EVENT_CTRL, EVENT_VALUE),
@@ -191,11 +192,16 @@ run(
         CtrlFilter(range(48,64)) >> Process(guitarixShiftOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
       ],
       ChannelFilter(4) >> [ #MFT Side Buttons
+        # Bank 1
         CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,48)],
         CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'),
         CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,24)],
-        
-        
+        # Bank 2
+        CtrlFilter(14) >> [
+          CtrlValueFilter(127) >> System('jack_capture --daemon -O 7777 &') >> Ctrl('MFTOut', 3, 29, 127),
+          CtrlValueFilter(0) >> System('oscsend localhost 7777 /jack_capture/stop') >> Ctrl('MFTOut', 3, 29, 0)
+        ],
+        # Bank 3
         CtrlFilter(20) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
         CtrlFilter(26) >> Ctrl('guitarixOut', 11, 96, EVENT_VALUE),
       ],
