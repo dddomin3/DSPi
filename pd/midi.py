@@ -5,10 +5,8 @@ from mididings.engine import *
 
 config(
   client_name='mididings',
-  #           0       1         2             3
-  in_ports=['MFTIn','amSynthIn','octatrackIn', 'guitarixIn'],
-  out_ports=['MFTOut','amSynthOut','octatrackOut', 'guitarixOut'],
-  #           4       5           6           7
+  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn'],
+  out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut'],
 )
 
 # These functions help map MFT MIDI messages over to other usages.
@@ -36,31 +34,31 @@ def guitarixShiftDeOffset(e):
 
 class MuteFix:
   ccToOctaTrack = {
-    16:1,17:5,
-    20:2,21:6,
-    24:3,25:7,
-    28:4,29:8,
+    16:1, 17:5,
+    20:2, 21:6,
+    24:3, 25:7,
+    28:4, 29:8,
   }
-  octaTrackToCc = [16,20,24,28,17,21,25,29]
+  octaTrackToCc = [16, 20, 24, 28, 17, 21, 25, 29]
   mftCcToOctaMidiTrack = {
-    18:1,19:5,
-    22:2,23:6,
-    26:3,27:7,
-    30:4,31:8,
+    18:1, 19:5,
+    22:2, 23:6,
+    26:3, 27:7,
+    30:4, 31:8,
   }
-  octaMidiTrackToMftCc = [18,22,26,30,19,23,27,31]
+  octaMidiTrackToMftCc = [18, 22, 26, 30, 19, 23, 27, 31]
   octaCcToOctaMidiTrack = {
-    112:1,116:5,
-    113:2,117:6,
-    114:3,118:7,
-    115:4,119:8,
+    112:1, 116:5,
+    113:2, 117:6,
+    114:3, 118:7,
+    115:4, 119:8,
   }
-  octaMidiTrackToOctaCc = [112,113,114,115,116,117,118,119]
+  octaMidiTrackToOctaCc = [112, 113, 114, 115, 116, 117, 118, 119]
   onColor = 40
   offColor = 85
 
-  volumeMutes = [False,False,False,False,False,False,False,False]
-  midiMutes   = [False,False,False,False,False,False,False,False]
+  volumeMutes = [False, False, False, False, False, False, False, False]
+  midiMutes = [False, False, False, False, False, False, False, False]
   mftPort = 'MFTOut'
   octaPort = 'octatrackOut'
 
