@@ -1,7 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 from mididings import *
 from mididings.event import *
-from mididings.engine import *
 
 config(
   client_name='mididings',
@@ -11,7 +10,7 @@ config(
 
 # These functions help map MFT MIDI messages over to other usages.
 # I usually use a CC offset to bring other programs CC's in line with
-# MFT CCs, keeping it sequential but with an offset
+# MFT CCs, keeping it sequential, but with an offset
 def amSynthOffset(e):
   e.ctrl = e.ctrl + 63
   return e
@@ -79,6 +78,7 @@ class MuteFix:
       49,
       klass.volumeMutes[octaTrack-1] * 127,
     )
+
     print(klass.volumeMutes,klass.midiMutes)
     return [mftOut, octaOut]
   
@@ -93,7 +93,6 @@ class MuteFix:
       klass.octaMidiTrackToMftCc[octaTrack-1],
       klass.onColor if klass.midiMutes[octaTrack-1] else klass.offColor
     )
-
     octaOut = CtrlEvent(
       klass.octaPort,
       1,
@@ -121,6 +120,7 @@ class MuteFix:
       49,
       klass.volumeMutes[octaTrack-1] * 127,
     )
+
     print(klass.volumeMutes,klass.midiMutes)
     return [mftOut, octaOut]
   
@@ -135,7 +135,6 @@ class MuteFix:
       klass.octaMidiTrackToMftCc[octaTrack-1],
       klass.onColor if klass.midiMutes[octaTrack-1] else klass.offColor
     )
-
     octaOut = CtrlEvent(
       klass.octaPort,
       1,
@@ -192,18 +191,20 @@ run(
         CtrlFilter(range(48,64)) >> Process(guitarixShiftOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
       ],
       ChannelFilter(4) >> [ #MFT Side Buttons
-        # Bank 1
+        # Bank 1: 8 9 10 11 12 13
         CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,48)],
         CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'),
         CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,24)],
-        # Bank 2
+        # Bank 2: 14 15 16 17 18 19
         CtrlFilter(14) >> [
           CtrlValueFilter(127) >> System('jack_capture --daemon -O 7777 &') >> Ctrl('MFTOut', 3, 29, 127),
           CtrlValueFilter(0) >> System('oscsend localhost 7777 /jack_capture/stop') >> Ctrl('MFTOut', 3, 29, 0)
         ],
-        # Bank 3
-        CtrlFilter(20) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
+        # Bank 3: 20 21 22 23 24 25
+        # Bank 4: 26 27 28 29 30 31
         CtrlFilter(26) >> Ctrl('guitarixOut', 11, 96, EVENT_VALUE),
+        CtrlFilter(27) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
+        CtrlFilter(31) >> System('sudo shutdown -h now'),
       ],
     ],
     PortFilter('amSynthIn') >> [
