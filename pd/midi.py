@@ -191,7 +191,16 @@ run(
         CtrlFilter(range(14,16)) >> Process(amSynthOffset) >> Ctrl('amSynthOut', 9, EVENT_CTRL, EVENT_VALUE),
 
         CtrlFilter(range(48,64)) >> Process(guitarixShiftOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
-      ]
+      ],
+      ChannelFilter(4) >> [ #MFT Side Buttons
+        CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,48)],
+        CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'),
+        CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,24)],
+        
+        
+        CtrlFilter(20) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
+        CtrlFilter(26) >> Ctrl('guitarixOut', 11, 96, EVENT_VALUE),
+      ],
     ],
     PortFilter('amSynthIn') >> [
       # Unshifted
