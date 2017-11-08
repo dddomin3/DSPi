@@ -53,8 +53,8 @@ class MuteFix:
     115:4, 119:8,
   }
   octaMidiTrackToOctaCc = [112, 113, 114, 115, 116, 117, 118, 119]
-  onColor = 40
-  offColor = 85
+  offColor = 40
+  onColor = 85
 
   volumeMutes = [False, False, False, False, False, False, False, False]
   midiMutes = [False, False, False, False, False, False, False, False]
@@ -192,19 +192,20 @@ run(
       ],
       ChannelFilter(4) >> [ #MFT Side Buttons
         # Bank 1: 8 9 10 11 12 13
-        CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,48)],
-        CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'),
-        CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(0) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(127) >> NoteOff('amSynthOut',9,24)],
+        CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(127) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(0) >> NoteOff('amSynthOut',9,48)],
+        CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'), # Ctrl(12) >> NextBank()
+        CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(127) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(0) >> NoteOff('amSynthOut',9,24)],
         # Bank 2: 14 15 16 17 18 19
-        CtrlFilter(14) >> [
+        CtrlFilter(15) >> [
           CtrlValueFilter(127) >> System('jack_capture --daemon -O 7777 &') >> Ctrl('MFTOut', 3, 29, 127),
           CtrlValueFilter(0) >> System('oscsend localhost 7777 /jack_capture/stop') >> Ctrl('MFTOut', 3, 29, 0)
         ],
         # Bank 3: 20 21 22 23 24 25
+        CtrlFilter(21) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh debug'),
         # Bank 4: 26 27 28 29 30 31
         CtrlFilter(26) >> Ctrl('guitarixOut', 11, 96, EVENT_VALUE),
         CtrlFilter(27) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
-        CtrlFilter(31) >> System('sudo shutdown -h now'),
+                                                                                   CtrlFilter(31) >> System('sudo shutdown -h now'),
       ],
     ],
     PortFilter('amSynthIn') >> [
