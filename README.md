@@ -11,7 +11,7 @@ This repository is me self-documenting my journeys in using a Raspberry Pi as an
 - Pure Data Patches/Super-Collider
 
 ... without stifling my creativity through excessive use of mouse and keyboard.
-This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI controlled module that is a jack-of-all-trades in my music setup.
+This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI-controlled module that is a jack-of-all-trades in my music setup.
 
 ## **I:** Installing Raspian
 
@@ -32,7 +32,7 @@ Backs up your SD card to a file called `from-sd-card.img`
 
 Installs Raspian to your sd card.
 
-Feel free to use NOOBS or whatever way you install raspbian. This is just what i do! :)
+Feel free to use NOOBS or whatever way you install raspbian. This is just what I do! :)
 
 ### **I3:** Making your new pi experience better
 
