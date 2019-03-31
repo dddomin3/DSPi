@@ -33,10 +33,10 @@
       - qjackctl
       - guitarix
       - aj-snapshot
-      - puredata
       - git
-      - pd-ggee
       - a2jmidid
+      - mididings
+      - liblo-tools
 
   - name: clone dspi git repo
     git:
