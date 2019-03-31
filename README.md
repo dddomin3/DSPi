@@ -242,8 +242,8 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 1. Set up jenkins to use `/bin/bash` for shell scripts. (Check in settings...)
 1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
-1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. 
 
+1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. 
 > TODO: Should probably not give ALL these permission to jenkins...or use docker?
 
 *WARNING:* Jenkins **will not** backup your SD Card. Consider doing it yourself. :)
@@ -259,11 +259,26 @@ Install ansible on your system.
 192.168.x.y #ip address or hostname of your pi
 ```
 
-run `ansible-playbooks raspi-playbook.yml -k`, supply pi password, and ansible will handle pushing your key from `~/.ssh/id_rsa.pub`
-
-If you don't have one, use `ssh-keygen` to generate one, and accept all defaults (No password, etc)
+Go onto your pi, and add your jenkins/ansible machines ssh key to your pi
 
 <https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md>
+Might have to do:
+
+```bash
+eval `ssh-agent -s`
+ssh-add
+sudo reboot
+```
+
+But I'm not sure
+
+run `ansible-playbooks raspi-playbook.yml -k`, supply pi password, and ansible will handle pushing your key from `~/.ssh/id_rsa.pub`
+
+If you don't have one, use `ssh-keygen` to generate one, and accept all defaults (No password, etc) <https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md>
+
+Now Jenkins (via ansible) should be able to enforce all configs on your pi for you :)
+
+
 
 Test connection by running the following command, and seeing the following response.
 
@@ -275,54 +290,43 @@ cheekymusic@cheekymusic-Q550LF:~$ ansible all -m ping -u pi --private-key ~/.ssh
 }
 ```
 
-## **C:** PD MIDI Reference (Outdated-ish)
+## **C:** MIDI Reference
 
-- Port 1 (Non-MFT)
-  - *Channel 1*
-    - **Octa** *Notes, CC 46, 47, 49, 112-119* Track 1: Mutes, Volumes, and Cues
-  - *Channel 2*
-    - **Octa** *Notes, CC 46, 47, 49* Track 2: Mutes, Volumes, and Cues
-  - *Channel 3*
-    - **Octa** *Notes, CC 46, 47, 49* Track 3: Mutes, Volumes, and Cues
-  - *Channel 4*
-    - **Octa** *Notes, CC 46, 47, 49* Track 4: Mutes, Volumes, and Cues
-  - *Channel 5*
-    - **Octa** *Notes, CC 46, 47, 49* Track 5: Mutes, Volumes, and Cues
-  - *Channel 6*
-    - **Octa** *Notes, CC 46, 47, 49* Track 6: Mutes, Volumes, and Cues
-  - *Channel 7*
-    - **Octa** *Notes, CC 46, 47, 49* Track 7: Mutes, Volumes, and Cues
-  - *Channel 8*
-    - **Octa** *Notes, CC 46, 47, 49* Track 8: Mutes, Volumes, and Cues
-  - *Channel 9*
-    - **amSynth** *Notes, CC 0-80, PC* Synth Params
-  - *Channel 10*
-    - **Octa** Auto Channel
-  - *Channel 11*
-    - **Guitarix** *CC 64-103* Guitar Amp and EFX Params
-  - *Channel 12*
-  - *Channel 13*
-  - *Channel 14*
-  - *Channel 15*
-  - *Channel 16*
-    - **Meta** *PC* DSPi Switch
-- Port 2 (MFT)
-  - *Channel 1*
-    - **MFTT** *CC 0-63* MIDI Out and Updates
-  - *Channel 2*
-    - **MFTT** *CC 0-127* Switch Out and Indicator Light In
-  - *Channel 3*
-    - **MFTT** *CC 0-63* Switch Animations & Brightness
-  - *Channel 4*
-    - **MFTT** *CC 0-3, 8-31* Banks and Side Buttons
-  - *Channel 5*
-    - **MFTT** *CC 0-63* Shift Out and Updates
-  - *Channel 6*
-    - **MFTT** *CC 0-127* Ring Animations and Brightness
-  - *Channel 7*
-    - NONE
-  - *Channel 8*
-    - **MFTT** *CC ??* Sequencer
+- *Channel 1*
+  - **MFTT** *CC 0-63* MIDI Out and Updates
+- *Channel 2*
+  - **MFTT** *CC 0-127* Switch Out and Indicator Light In
+- *Channel 3*
+  - **MFTT** *CC 0-63* Switch Animations & Brightness
+- *Channel 4*
+  - **MFTT** *CC 0-3, 8-31* Banks and Side Buttons
+- *Channel 5*
+  - **MFTT** *CC 0-63* Shift Out and Updates
+  - **Guitarix** *CC 64-103* Guitar Amp and EFX Params
+- *Channel 6*
+  - **MFTT** *CC 0-127* Ring Animations and Brightness
+- *Channel 7*
+  - **Octa** *Notes, CC 46, 47, 49* Track 7: Mutes, Volumes, and Cues
+- *Channel 8*
+  - **MFTT** *CC ??* Sequencer
+  - **Octa** *Notes, CC 46, 47, 49* Track 8: Mutes, Volumes, and Cues
+- *Channel 9*
+  - **amSynth** *Notes, CC 0-80, PC* Synth Params
+- *Channel 10*
+  - **Octa** Auto Channel
+- *Channel 11*
+  - **Octa** *Notes, CC 46, 47, 49, 112-119* Track 1: Mutes, Volumes, and Cues
+- *Channel 12*
+  - **Octa** *Notes, CC 46, 47, 49* Track 2: Mutes, Volumes, and Cues
+- *Channel 13*
+  - **Octa** *Notes, CC 46, 47, 49* Track 3: Mutes, Volumes, and Cues
+- *Channel 14*
+  - **Octa** *Notes, CC 46, 47, 49* Track 4: Mutes, Volumes, and Cues
+- *Channel 15*
+  - **Octa** *Notes, CC 46, 47, 49* Track 5: Mutes, Volumes, and Cues
+- *Channel 16*
+  - **Meta** *PC* DSPi Switch
+  - **Octa** *Notes, CC 46, 47, 49* Track 6: Mutes, Volumes, and Cues
 
 ## **i** Resources
 
