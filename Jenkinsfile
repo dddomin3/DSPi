@@ -56,19 +56,19 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'kernelRepoTag',
-                defaultValue: 'raspberrypi-kernel_1.20170405-1',
+                defaultValue: 'raspberrypi-kernel_1.20180924-1',
                 description: 'git tag for kernel repo'
               ],
               [
                 $class: 'TextParameterDefinition',
                 name: 'patchUrl',
-                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/older',
+                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older',
                 description: 'URL to realtime kernel patch'
               ],
               [
                 $class: 'TextParameterDefinition',
                 name: 'patchFile',
-                defaultValue: 'patch-4.4.50-rt63.patch.gz',
+                defaultValue: 'raspberrypi-kernel_1.20170405-1tch-4.14.71-rt44.patch.gz',
                 description: 'kernel patch file name. Should be *.patch.gz'
               ],
               [
@@ -80,7 +80,7 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'deployPathLibPrefix',
-                defaultValue: '/media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716',
+                defaultValue: '/media/cheekymusic/rootfs',
                 description: 'Path to Raspi lib dir.'
               ],
               [
@@ -205,7 +205,7 @@ pipeline {
   sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
       <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
     <\\/policy>\\
-  <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf
+  <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.d/avahi-dbus.conf
               """
             } else { echo "Already configured system.conf!" }
             ///////////////////////////////
