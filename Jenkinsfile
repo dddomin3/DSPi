@@ -68,7 +68,7 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'patchFile',
-                defaultValue: 'raspberrypi-kernel_1.20170405-1tch-4.14.71-rt44.patch.gz',
+                defaultValue: 'patch-4.14.71-rt44.patch.gz',
                 description: 'kernel patch file name. Should be *.patch.gz'
               ],
               [
@@ -111,9 +111,13 @@ pipeline {
       }
     }
     stage('Copy Image') {
-      if (userInput['raspiImage']) {
-        sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
-      } else { echo "No raspiImage specified! Not copying raspiImage." }
+      steps {
+        script {
+          if (userInput['raspiImage']) {
+            sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
+          } else { echo "No raspiImage specified! Not copying raspiImage." }
+        }
+      }
     }
     stage('Clone') {
       steps {
