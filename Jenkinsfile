@@ -118,7 +118,13 @@ pipeline {
     stage('Copy Image') {
       steps {
         script {
-          if (userInput['raspiImage']) {
+          pushImage = false  
+          try {
+            sh("sudo tail -n1 $userInput.raspiImage")
+            pushImage = true
+          } catch(e1) { pushImage = false }
+
+          if (pushImage) {
             sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
           } else { echo "No raspiImage specified! Not copying raspiImage." }
         }
