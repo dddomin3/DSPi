@@ -38,6 +38,11 @@ pipeline {
               ],
               [
                 $class: 'FileParameterDefinition',
+                description: 'Upload a id_rsa.pub file for key-based auth (which ansible uses!).',
+                name: 'sshPublicKey'
+              ],
+              [
+                $class: 'FileParameterDefinition',
                 description: 'Upload a raspi image to push to sd card.',
                 name: 'raspiImage'
               ],
@@ -234,6 +239,20 @@ pipeline {
               sh("sudo chmod 600 $userInput.deployPathLibPrefix/etc/wpa_supplicant/wpa_supplicant.conf")
               sh("sudo chown root:root $userInput.deployPathLibPrefix/etc/wpa_supplicant/wpa_supplicant.conf")
             } else { echo "Invalid wpa_supplicant.conf!" }
+            ////////////////////////////
+            // key auth configuration //
+            ////////////////////////////
+            def configureKeyAuth = false
+            try {
+              sh("sudo grep -c '$userInput.sshPublicKey' $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys")
+              configureKeyAuth = true
+            } catch(e1) { configureKeyAuth = false }
+            
+            if (configureKeyAuth) {
+              sh("sudo install -o pi -g pi -d -m 700 $userInput.deployPathLibPrefix/home/pi/.ssh")
+              sh("echo '$userInput.sshPublicKey' >> $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys")
+              echo "ssh key installed"
+            } else { echo "key already authorized for ssh :)" }
           } else { echo 'Not doing local pi configs :)' }
         }
       }
