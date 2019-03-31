@@ -11,7 +11,7 @@ This repository is me self-documenting my journeys in using a Raspberry Pi as an
 - Pure Data Patches/Super-Collider
 
 ... without stifling my creativity through excessive use of mouse and keyboard.
-This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI controlled module that is a jack-of-all-trades in my music setup.
+This necessitates a low-latency environment with tons of connectivity. My plan is to cycle through all of the aforementioned functions through a standardized MIDI CC/Program Change Schema, effectively creating a MIDI-controlled module that is a jack-of-all-trades in my music setup.
 
 ## **I:** Installing Raspian
 
@@ -32,7 +32,7 @@ Backs up your SD card to a file called `from-sd-card.img`
 
 Installs Raspian to your sd card.
 
-Feel free to use NOOBS or whatever way you install raspbian. This is just what i do! :)
+Feel free to use NOOBS or whatever way you install raspbian. This is just what I do! :)
 
 ### **I3:** Making your new pi experience better
 
@@ -98,6 +98,7 @@ make menuconfig # Need a large terminal
 
 # Kernel Features > Preemption Kernel (Low Latency Desktop)
 # CPU Power Management > Frequency Scaling > Performance
+# CPU Power Management > Tick Frequency > 250 MHz
 ```
 
 `make menuconfig` may fail if your terminal isn't maximized.
@@ -163,14 +164,16 @@ This allows the dbus-compiled jack server to run without a GUI running.
 ### **II6:** Installing music stuff and configuring it
 
 Install this stuff!
-`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot puredata git pd-ggee`
+`sudo apt-get install qjackctl jackd2 guitarix aj-snapshot git a2jmidid liblo-tools mididings`
 
 - Jackd2 (jackd2) is audio server
 - qjackctl is a QT-based GUI to manage jackd2 server. There are others if you prefer.
 - guitarix is a guitar amp simulator
 - aj-snapshot is the automatic audio/midi auto connection daemon. May be able to replace this with `--jack-autoconnect` (and similar CLI flags) on guitarix and amsynth.
 - git to clone this repo
-- puredata and pd-ggee for MIDI translation and script launching on MIDI message
+- a2jmidid for alsa to jack midi bridging
+- liblo-tools for osc support, which is used for audio recording
+- mididings for MIDI translation and script launching on MIDI message
 
 Allow jack server to use realtime priority (it'll ask when you're installing. Say yes.)
 
@@ -208,9 +211,9 @@ NOTE: This is because the audio stuff needs to run as the pi user, and I can't f
 `/etc/init.d` instructions paraphrased from resource \#4.
 `jackstart.sh` based on resource \#5.
 
-### **II9:** Pure Data
+### **II9:** Mididings - midi.py
 
-jackstart.sh starts a puredata script which assists in switching which dsp is currently running on the pi. The PD script responds to values on MIDI:`CH16 PC`. Depending on the value, a specific program (or "DSPi") will be ran, and others will be killed:
+jackstart.sh starts a python script which assists in switching which dsp is currently running on the pi. The Python script responds to values on MIDI:`CH16 PC`. Depending on the value, a specific program (or "DSPi") will be ran, and others will be killed:
 
 - 0: Runs guitarix (Turns off wireless chip)
 - 64: Runs amsynth (Turns off wireless chip)
@@ -238,7 +241,11 @@ Also included amsynthSettings, contents can go right into `~/` for midi mapping 
 1. Set up jenkins to use `/bin/bash` for shell scripts. (Check in settings...)
 1. Get git plugin, and pipeline plugin.
 1. Make new project based on this repo, pointing at Jenkinsfile. <https://jenkins.io/doc/book/pipeline/getting-started/>
-1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. TODO: Should probably not give ALL these permission to jenkins...
+
+1. Do a `sudo visudo` and add `jenkins ALL=(ALL:ALL) NOPASSWD:ALL` to your sudoers. 
+> TODO: Should probably not give ALL these permission to jenkins...or use docker?
+
+*WARNING:* Jenkins **will not** backup your SD Card. Consider doing it yourself. :)
 
 ## **B:** Ansible can do the rest for you!
 
@@ -264,9 +271,15 @@ sudo reboot
 
 But I'm not sure
 
+run `ansible-playbooks raspi-playbook.yml -k`, supply pi password, and ansible will handle pushing your key from `~/.ssh/id_rsa.pub`
+
+If you don't have one, use `ssh-keygen` to generate one, and accept all defaults (No password, etc) <https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md>
+
 Now Jenkins (via ansible) should be able to enforce all configs on your pi for you :)
 
-Test connection by running the following command, and seeing a success
+
+
+Test connection by running the following command, and seeing the following response.
 
 ```bash
 cheekymusic@cheekymusic-Q550LF:~$ ansible all -m ping -u pi --private-key ~/.ssh/id_rsa.pub --become

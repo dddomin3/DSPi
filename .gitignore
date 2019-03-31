@@ -4,3 +4,7 @@ jackboot.log
 linux/
 tools/
 *.patch.gz
+raspi-playbook.retry
+from-sd-card.img
+poo.snap
+test.snap

@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <alsa>
   <client name="Midi Through">
-    <port id="0" />
+    <port id="0">
+      <connection client="mididings" port="3" /> <!--Guitarix-->
+    </port>
   </client>
   <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
-      <connection client="Pure Data" port="0" />
+      <connection client="mididings" port="0" /> <!--MFT-->
     </port>
   </client>
   <client name="QuNexus">
@@ -18,54 +20,51 @@
   </client>
   <client name="mio"> <!-- Octatrack. DIN world. -->
     <port id="0">
-      <connection client="Pure Data" port="0" />
+      <connection client="mididings" port="2" /><!--Octa-->
       <connection client="amsynth" port="0" />
     </port>
   </client>
-  <client name="Pure Data">
+  <client name="mididings">
     <!--
-      Pure Data translates weird values from MIDI Fighter into useable values.
+      mididings translates weird values from MIDI Fighter into useable values.
       Leaving Defaults on MFT so we get Full Duplex support
     -->
-    <port id="1">
+    <port id="4"> <!--MFT-->
+      <connection client="Midi Fighter Twister" port="0" />  <!-- Full Duplex right hurr -->
+    </port>
+    <port id="5"> <!--amSynth-->
       <connection client="amsynth" port="0" />
+    </port>
+    <port id="6"> <!--Octa-->
       <connection client="mio" port="0" />
-      <connection client="Midi Fighter Twister" port="0" /> <!-- Full Duplex right hurr -->
+    </port>
+    <port id="7"> <!--Guitarix-->
+      <connection client="Midi Through" port="0" />
     </port>
   </client>
   <client name="amsynth">
     <!--
-      amSynth outputs values out to the MFT (through pd) on bank/program change
+      amSynth outputs values out to the MFT (through mididings) on bank/program change
     -->
     <port id="1">
-      <connection client="Pure Data" port="0" />
+      <connection client="mididings" port="1" /> <!--amSynth-->
     </port>
   </client>
 </alsa>
-<!-- Guitarix should do this itself...
 <jack>
-  <client name="amsynth">
-    <port name="L out">
-      <connection port="system:playback_1" />
-    </port>
-    <port name="R out">
-      <connection port="system:playback_2" />
-    </port>
-    <port name="midi_out" />
-  </client>
   <client name="system">
     <port name="capture_1">
       <connection port="gx_head_amp:in_0" />
     </port>
-    <port name="midi_capture_1">
-      <connection port="gx_head_amp:midi_in_1" />
-    </port>
+    <port name="capture_2" />
   </client>
+
   <client name="gx_head_amp">
     <port name="out_0">
       <connection port="gx_head_fx:in_0" />
     </port>
   </client>
+
   <client name="gx_head_fx">
     <port name="out_0">
       <connection port="system:playback_1" />
@@ -74,5 +73,11 @@
       <connection port="system:playback_2" />
     </port>
   </client>
+
+  <client name="a2j">
+    <port name="Midi Through [14] (capture): Midi Through Port-0">
+      <connection port="gx_head_amp:midi_in_1" />
+    </port>
+  </client>
+
 </jack>
--->

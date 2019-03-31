@@ -6,6 +6,21 @@
   hosts: dspi
   remote_user: pi
   tasks:
+  - name: ensure .ssh folder exists
+    file:
+      dest: /home/pi/.ssh
+      state: directory
+      mode: 0700
+      group: pi
+      owner: pi
+
+  - name: ensure id_rsa.pub is in authorized_hosts
+    copy:
+      src: ~/.ssh/id_rsa.pub
+      dest: /home/pi/.ssh/authorized_hosts
+      owner: pi
+      group: pi
+      mode: 0644
   - name: ensure music packages are up to date and installed
     become: true
     apt:
@@ -17,15 +32,39 @@
       - qjackctl
       - guitarix
       - aj-snapshot
-      - puredata
       - git
-      - pd-ggee
+      - a2jmidid
+      - mididings
+      - liblo-tools
 
   - name: clone dspi git repo
     git:
       repo: https://github.com/dddomin3/DSPi.git
       dest: ~/DSPi
       refspec: master
+  
+  - name: ensure audio group is present
+    become: true
+    group:
+      name: audio
+      state: present
+
+  - name: ensure pi is in audio group
+    become: true
+    user:
+      name: pi
+      append: yes
+      groups: pi, audio, sudo, i2c
+
+  - name: ensure audio.conf is in limits.d
+    become: true
+    copy:
+      src: '/home/pi/DSPi/configs/audio.conf'
+      dest: '/etc/security/limits.d'
+      remote_src: true
+      mode: 0644
+      owner: root
+      group: root
 
   - name: set pi gpu mem to 16
     become: true
@@ -44,6 +83,9 @@
       dest: '/etc/init.d/jackboot'
       remote_src: true
       mode: 0755
+    notify:
+      - make jackboot run on boot
+      - restart jackboot
       
   - name: make sure jackstart.sh is executable
     file:
@@ -51,16 +93,6 @@
       mode: 0755
       owner: pi
       group: pi
-
-  - name: make jackboot run on boot
-    become: true
-    command: update-rc.d jackboot defaults
-
-  - name: restart jackboot
-    become: true
-    service:
-      name: jackboot
-      state: restarted
 
   - name: ensure jackboot.log exists
     become: true
@@ -122,4 +154,13 @@
   - name: compile and install amsynth
     shell: './autogen.sh && ./configure && make && sudo make install'
     args:
-      chdir: /home/pi/amsynth
+
+  - name: make jackboot run on boot
+    become: true
+    command: update-rc.d jackboot defaults
+
+  - name: restart jackboot
+    become: true
+    service:
+      name: jackboot
+      state: restarted
