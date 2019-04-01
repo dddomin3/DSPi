@@ -2,6 +2,7 @@
 export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
 killall -9 amsynth
 killall -9 guitarix
+killall -9 a2jmidid
 killall -9 jackd
 killall -9 a2jmidid
 
