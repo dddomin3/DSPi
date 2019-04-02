@@ -136,8 +136,8 @@
       url: https://blokas.io/pisound/install-pisound.sh
       dest: /tmp/install-pisound.sh
       mode: 0755
-  notify:
-    - install pisound 
+    notify:
+      - install pisound 
 # TODO: run pisound
 # TODO: use systemctl
 # TODO: configure pisound to make button do dspiSwitcher stuff
