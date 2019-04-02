@@ -61,19 +61,19 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'kernelRepoTag',
-                defaultValue: 'raspberrypi-kernel_1.20170405-1',
+                defaultValue: 'raspberrypi-kernel_1.20180924-1',
                 description: 'git tag for kernel repo'
               ],
               [
                 $class: 'TextParameterDefinition',
                 name: 'patchUrl',
-                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/older',
+                defaultValue: 'https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/older',
                 description: 'URL to realtime kernel patch'
               ],
               [
                 $class: 'TextParameterDefinition',
                 name: 'patchFile',
-                defaultValue: 'patch-4.4.50-rt63.patch.gz',
+                defaultValue: 'patch-4.14.71-rt44.patch.gz',
                 description: 'kernel patch file name. Should be *.patch.gz'
               ],
               [
@@ -85,7 +85,7 @@ pipeline {
               [
                 $class: 'TextParameterDefinition',
                 name: 'deployPathLibPrefix',
-                defaultValue: '/media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716',
+                defaultValue: '/media/cheekymusic/rootfs',
                 description: 'Path to Raspi lib dir.'
               ],
               [
@@ -116,9 +116,19 @@ pipeline {
       }
     }
     stage('Copy Image') {
-      if (userInput['raspiImage']) {
-        sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
-      } else { echo "No raspiImage specified! Not copying raspiImage." }
+      steps {
+        script {
+          pushImage = false  
+          try {
+            sh("sudo tail -n1 $userInput.raspiImage")
+            pushImage = true
+          } catch(e1) { pushImage = false }
+
+          if (pushImage) {
+            sh("sudo dd bs=4M if=$userInput.raspiImage of=/dev/mmcblk0 status=progress && sync")
+          } else { echo "No raspiImage specified! Not copying raspiImage." }
+        }
+      }
     }
     stage('Clone') {
       steps {
@@ -142,7 +152,7 @@ pipeline {
             sh("mv configs/.$userInput.kernelConfig linux/.config")
             // Patch Kernel code with realtime code
             dir('linux/') {
-              sh("wget $userInput.patchUrl/$userInput.patchFile")
+              sh+("wget $userInput.patchUrl/$userInput.patchFile")
               sh("zcat $userInput.patchFile | patch -p1")
             }
           } else { echo 'No need to patch, reusing kernel :)' }
@@ -202,7 +212,7 @@ pipeline {
             ///////////////////////////////
 
             try {
-              sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf")
+              sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/avahi-dbus.conf")
             } catch(e1) { configureSystemConf = true }
 
             if (configureSystemConf) {
@@ -210,7 +220,7 @@ pipeline {
   sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
       <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
     <\\/policy>\\
-  <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf
+  <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.d/avahi-dbus.conf
               """
             } else { echo "Already configured system.conf!" }
             ///////////////////////////////
@@ -244,7 +254,7 @@ pipeline {
             ////////////////////////////
             def configureKeyAuth = false
             try {
-              sh("sudo grep -c '$userInput.sshPublicKey' $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys")
+              sh("sudo grep -c '$userInput.sshPublicKey' $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys") // TODO: fails if dne
               configureKeyAuth = true
             } catch(e1) { configureKeyAuth = false }
             
