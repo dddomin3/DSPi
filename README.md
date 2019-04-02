@@ -38,9 +38,13 @@ Feel free to use NOOBS or whatever way you install raspbian. This is just what I
 
 `touch /media/cheekymusic/boot/ssh` enables ssh
 
-`sudo nano /media/cheekymusic/f2100b2f-ed84-4647-b5ae-089280112716/etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
+`sudo nano /media/cheekymusic/rootfs/etc/wpa_supplicant/wpa_supplicant.conf` the stuff on the bottom to auto-connect to your networks.
 
 ```conf
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US # Country code can differ, of course
+
 network={
         ssid="SSID_AMAZING_2.4"
         psk="fourwordsallcapswithspaces"
@@ -78,21 +82,18 @@ Check this file (and similar commits) for the kernel version. This usually happe
 
 ```bash
 cd ~/linux
-wget https://www.kernel.org/pub/linux/kernel/projects/rt/4.4/[*.patch.gz] # Replace with patch matching the kernel you grabbed from kernel repo
+wget https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/[*.patch.gz] # Replace with patch matching the kernel you grabbed from kernel repo
 zcat [patch.file.patch.gz] | patch -p1
 ```
 
 Make sure the kernel patch matches the kernel version in the previous step EXACTLY! I've made this mistake, and it prevents the pi from booting. YMMV.
-I used `patch-4.4.50-rt63.patch.gz` as of this commit.
+I used `patch-4.14.71-rt44.patch.gz` as of this commit.
 
 ### **II3:** Grab configs from raspi
 
 ```bash
-scp pi@ip.address.of.pi:/proc/config.gz
-zcat config.gz > .config
-# or grab it from the sd card
-
-rm .oldconfig # do i need to do this?
+source REPO/bash/kernel.source
+make bcm2709_defconfig
 make olddefconfig # this sets defaults for a lot of stuff
 make menuconfig # Need a large terminal
 
