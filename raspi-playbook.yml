@@ -128,6 +128,20 @@
       group: pi
       mode: 0755
 
+  - name: setup pisound drivers
+    command: curl https://blokas.io/pisound/install-pisound.sh | sh
+    
+  - name: download pisound
+    get_url:
+      url: https://blokas.io/pisound/install-pisound.sh
+      dest: /tmp/install-pisound.sh
+      mode: 0755
+  notify:
+    - install pisound 
+# TODO: run pisound
+# TODO: use systemctl
+# TODO: configure pisound to make button do dspiSwitcher stuff
+
   handlers:
   - name: ensure compile prerequisites are installed
     become: true
@@ -165,3 +179,6 @@
     service:
       name: jackboot
       state: restarted
+
+  - name: install pisound
+    script: /tmp/install-pisound.sh
