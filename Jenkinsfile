@@ -212,7 +212,7 @@ pipeline {
             ///////////////////////////////
 
             try {
-              sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/system.conf")
+              sh("sudo grep -c '<allow own=\"org.freedesktop.ReserveDevice1.Audio1\"/>' $userInput.deployPathLibPrefix/etc/dbus-1/avahi-dbus.conf")
             } catch(e1) { configureSystemConf = true }
 
             if (configureSystemConf) {
@@ -254,7 +254,7 @@ pipeline {
             ////////////////////////////
             def configureKeyAuth = false
             try {
-              sh("sudo grep -c '$userInput.sshPublicKey' $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys")
+              sh("sudo grep -c '$userInput.sshPublicKey' $userInput.deployPathLibPrefix/home/pi/.ssh/authorized_keys") // TODO: fails if dne
               configureKeyAuth = true
             } catch(e1) { configureKeyAuth = false }
             
