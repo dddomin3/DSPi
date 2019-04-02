@@ -13,12 +13,12 @@
   <client name="QuNexus">
     <port id="0">
       <connection client="amsynth" port="0" />
-      <connection client="mio" port="0" />
+      <connection client="pisound" port="0" />
     </port>
     <port id="1" />
     <port id="2" />
   </client>
-  <client name="mio"> <!-- Octatrack. DIN world. -->
+  <client name="pisound"> <!-- Octatrack. DIN world. -->
     <port id="0">
       <connection client="mididings" port="2" /><!--Octa-->
       <connection client="amsynth" port="0" />
@@ -36,7 +36,7 @@
       <connection client="amsynth" port="0" />
     </port>
     <port id="6"> <!--Octa-->
-      <connection client="mio" port="0" />
+      <connection client="pisound" port="0" />
     </port>
     <port id="7"> <!--Guitarix-->
       <connection client="Midi Through" port="0" />

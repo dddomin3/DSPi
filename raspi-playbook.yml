@@ -153,6 +153,7 @@
       - autopoint
   - name: compile and install amsynth
     shell: './autogen.sh && ./configure && make && sudo make install'
+    become: true
     args:
 
   - name: make jackboot run on boot
