@@ -128,9 +128,6 @@
       group: pi
       mode: 0755
 
-  - name: setup pisound drivers
-    command: curl https://blokas.io/pisound/install-pisound.sh | sh
-    
   - name: download pisound
     get_url:
       url: https://blokas.io/pisound/install-pisound.sh
@@ -181,4 +178,4 @@
       state: restarted
 
   - name: install pisound
-    script: /tmp/install-pisound.sh
+    command: ./tmp/install-pisound.sh
