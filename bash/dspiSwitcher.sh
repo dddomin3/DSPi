@@ -12,7 +12,7 @@ if [ "${#1}" -gt "0" ]; then
 fi
 
 [ $dspi == 'guitarix' ] && (
-  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:pisound -r96000 -p64 -n6 -s -S -D -Xnone >> /home/pi/DSPi/jackboot.log &
+  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:pisound -r48000 -p128 -n3 -s -D -Xnone >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
   sleep 15
   guitarix --nogui -t >> /home/pi/DSPi/jackboot.log &
@@ -23,10 +23,10 @@ fi
   exit 0;
 )
 [ $dspi == 'amsynth' ] && (
-  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:pisound -r96000 -p64 -n6 -s -S -P -Xnone >> /home/pi/DSPi/jackboot.log &
+  jackd -s -S -P80 -p16 -t2000 -dalsa -dhw:pisound -r48000 -p128 -n3 -s -P -Xnone >> /home/pi/DSPi/jackboot.log &
   # chrt -a -r -p 80 $! &
   sleep 15
-  amsynth -x -malsa -ajack -c9 -p4 -r96000 >> /home/pi/DSPi/jackboot.log &
+  amsynth -x -malsa -ajack -c9 -p4 -r48000 >> /home/pi/DSPi/jackboot.log &
   chrt -a -r -p 75 $! &
   echo "wubwubwub"
   sudo ifdown wlan0 &
