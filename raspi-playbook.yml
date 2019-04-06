@@ -163,13 +163,13 @@
       - pandoc
       - autopoint
   - name: compile and install amsynth
-    shell: './autogen.sh && ./configure && make && sudo make install'
+    shell: 'cd /home/pi/amsynth && ./autogen.sh && ./configure && make && sudo make install'
     become: true
     args:
 
   - name: make jackboot run on boot
     become: true
-    command: update-rc.d jackboot defaults
+    command: sudo systemctl enable jackboot
 
   - name: restart jackboot
     become: true
@@ -177,5 +177,3 @@
       name: jackboot
       state: restarted
 
-  - name: install pisound
-    command: ./tmp/install-pisound.sh

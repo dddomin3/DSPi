@@ -218,7 +218,9 @@ pipeline {
             if (configureSystemConf) {
               sh """
   sudo sed -i 's/<\\/busconfig>/  <policy user="pi">\\
+      <allow own="org.freedesktop.ReserveDevice1.Audio0"\\/>\\
       <allow own="org.freedesktop.ReserveDevice1.Audio1"\\/>\\
+      <allow own="org.freedesktop.ReserveDevice1.Audio2"\\/>\\
     <\\/policy>\\
   <\\/busconfig>/' $userInput.deployPathLibPrefix/etc/dbus-1/system.d/avahi-dbus.conf
               """
