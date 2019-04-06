@@ -152,7 +152,7 @@ pipeline {
             sh("mv configs/.$userInput.kernelConfig linux/.config")
             // Patch Kernel code with realtime code
             dir('linux/') {
-              sh+("wget $userInput.patchUrl/$userInput.patchFile")
+              sh("wget $userInput.patchUrl/$userInput.patchFile")
               sh("zcat $userInput.patchFile | patch -p1")
             }
           } else { echo 'No need to patch, reusing kernel :)' }
