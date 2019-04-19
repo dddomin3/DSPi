@@ -193,7 +193,7 @@ run(
       ChannelFilter(4) >> [ #MFT Side Buttons
         # Bank 1: 8 9 10 11 12 13
         CtrlFilter(8)  >> Ctrl('amSynthOut',9,21,EVENT_VALUE), CtrlFilter(11) >> [CtrlValueFilter(127) >> NoteOn('amSynthOut',9,48,127), CtrlValueFilter(0) >> NoteOff('amSynthOut',9,48)],
-        CtrlFilter(9)  >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'), # Ctrl(12) >> NextBank()
+        CtrlFilter(9) >> CtrlValueFilter(127) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh amsynth'), # Ctrl(12) >> NextBank()
         CtrlFilter(10) >> Ctrl('amSynthOut', 9, 91, EVENT_VALUE), CtrlFilter(13) >> [CtrlValueFilter(127) >> NoteOn('amSynthOut',9,24,127), CtrlValueFilter(0) >> NoteOff('amSynthOut',9,24)],
         # Bank 2: 14 15 16 17 18 19
         CtrlFilter(15) >> [
@@ -201,11 +201,11 @@ run(
           CtrlValueFilter(0) >> System('oscsend localhost 7777 /jack_capture/stop') >> Ctrl('MFTOut', 3, 29, 0)
         ],
         # Bank 3: 20 21 22 23 24 25
-        CtrlFilter(21) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh debug'),
+        CtrlFilter(21) >> CtrlValueFilter(127) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh debug'),
         # Bank 4: 26 27 28 29 30 31
         CtrlFilter(26) >> Ctrl('guitarixOut', 11, 96, EVENT_VALUE),
-        CtrlFilter(27) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
-                                                                                   CtrlFilter(31) >> System('sudo shutdown -h now'),
+        CtrlFilter(27) >> CtrlValueFilter(127) >> System('/home/pi/DSPi/bash/dspiSwitcher.sh guitarix'),
+                                                                                   CtrlFilter(31) >> CtrlValueFilter(0) >> System('sudo shutdown -h now'),
       ],
     ],
     PortFilter('amSynthIn') >> [
