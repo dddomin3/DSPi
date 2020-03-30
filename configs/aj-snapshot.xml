@@ -14,6 +14,7 @@
     <port id="0">
       <connection client="amsynth" port="0" />
       <connection client="pisound" port="0" />
+      <connection client="OP-Z" port="0" />
     </port>
     <port id="1" />
     <port id="2" />
@@ -40,6 +41,9 @@
     </port>
     <port id="7"> <!--Guitarix-->
       <connection client="Midi Through" port="0" />
+    </port>
+    <port id="8"> <!--OP-Z-->
+      <connection client="OP-Z" port="0" />
     </port>
   </client>
   <client name="amsynth">

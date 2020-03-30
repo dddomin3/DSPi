@@ -5,7 +5,7 @@ from mididings.event import *
 config(
   client_name='mididings',
   in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn'],
-  out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut'],
+  out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut', 'opzOut'],
 )
 
 # These functions help map MFT MIDI messages over to other usages.
@@ -247,6 +247,7 @@ run(
         ChannelFilter(3) >> Ctrl('MFTOut', 1, 26, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 27, EVENT_VALUE),
         ChannelFilter(4) >> Ctrl('MFTOut', 1, 30, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 31, EVENT_VALUE),
       ],
+      Filter(SYSRT) >> Output('opzOut')
     ],
     PortFilter('guitarixIn') >> [
         CtrlFilter(range(64,80)) >> Process(guitarixDeOffset) >> Ctrl('MFTOut', 1, EVENT_CTRL, EVENT_VALUE),
