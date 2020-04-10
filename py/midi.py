@@ -254,13 +254,13 @@ run(
         CtrlFilter(range(80,95)) >> Process(guitarixShiftDeOffset) >> Ctrl('MFTOut', 5, EVENT_CTRL, EVENT_VALUE),
     ],
     PortFilter('opzIn') >> [
-      channelFilter(10) >> Channel(1) >> Port('opzOut'),
-      channelFilter(11) >> Channel(2) >> Port('opzOut'),
-      channelFilter(12) >> Channel(3) >> Port('opzOut'),
-      channelFilter(13) >> Channel(5) >> Port('opzOut'),
-      channelFilter(14) >> Channel(6) >> Port('opzOut'),
-      channelFilter(15) >> Channel(7) >> Port('opzOut'),
-      channelFilter(16) >> Channel(8) >> Port('opzOut'),
+      ChannelFilter(10) >> Channel(1) >> Port('opzOut'),
+      ChannelFilter(11) >> Channel(2) >> Port('opzOut'),
+      ChannelFilter(12) >> Channel(3) >> Port('opzOut'),
+      ChannelFilter(13) >> Channel(5) >> Port('opzOut'),
+      ChannelFilter(14) >> Channel(6) >> Port('opzOut'),
+      ChannelFilter(15) >> Channel(7) >> Port('opzOut'),
+      ChannelFilter(16) >> Channel(8) >> Port('opzOut'),
     ]
   ]
 )
