@@ -4,7 +4,7 @@ from mididings.event import *
 
 config(
   client_name='mididings',
-  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn'],
+  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'opzIn'],
   out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut', 'opzOut'],
 )
 
@@ -247,11 +247,20 @@ run(
         ChannelFilter(3) >> Ctrl('MFTOut', 1, 26, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 27, EVENT_VALUE),
         ChannelFilter(4) >> Ctrl('MFTOut', 1, 30, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 31, EVENT_VALUE),
       ],
-      Filter(SYSRT) >> Output('opzOut')
+      Filter(SYSRT) >> Port('opzOut')
     ],
     PortFilter('guitarixIn') >> [
         CtrlFilter(range(64,80)) >> Process(guitarixDeOffset) >> Ctrl('MFTOut', 1, EVENT_CTRL, EVENT_VALUE),
         CtrlFilter(range(80,95)) >> Process(guitarixShiftDeOffset) >> Ctrl('MFTOut', 5, EVENT_CTRL, EVENT_VALUE),
+    ],
+    PortFilter('opzIn') >> [
+      channelFilter(10) >> Channel(1) >> Port('opzOut'),
+      channelFilter(11) >> Channel(2) >> Port('opzOut'),
+      channelFilter(12) >> Channel(3) >> Port('opzOut'),
+      channelFilter(13) >> Channel(5) >> Port('opzOut'),
+      channelFilter(14) >> Channel(6) >> Port('opzOut'),
+      channelFilter(15) >> Channel(7) >> Port('opzOut'),
+      channelFilter(16) >> Channel(8) >> Port('opzOut'),
     ]
   ]
 )

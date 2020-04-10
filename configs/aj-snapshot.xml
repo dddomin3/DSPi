@@ -13,8 +13,8 @@
   <client name="QuNexus">
     <port id="0">
       <connection client="amsynth" port="0" />
-      <connection client="pisound" port="0" />
-      <connection client="OP-Z" port="0" />
+      <connection client="pisound" port="0" />=
+      <connection client="mididings" port="4" /> <!--OP-Z-->
     </port>
     <port id="1" />
     <port id="2" />
@@ -30,19 +30,19 @@
       mididings translates weird values from MIDI Fighter into useable values.
       Leaving Defaults on MFT so we get Full Duplex support
     -->
-    <port id="4"> <!--MFT-->
+    <port id="5"> <!--MFT-->
       <connection client="Midi Fighter Twister" port="0" />  <!-- Full Duplex right hurr -->
     </port>
-    <port id="5"> <!--amSynth-->
+    <port id="6"> <!--amSynth-->
       <connection client="amsynth" port="0" />
     </port>
-    <port id="6"> <!--Octa-->
+    <port id="7"> <!--Octa-->
       <connection client="pisound" port="0" />
     </port>
-    <port id="7"> <!--Guitarix-->
+    <port id="8"> <!--Guitarix-->
       <connection client="Midi Through" port="0" />
     </port>
-    <port id="8"> <!--OP-Z-->
+    <port id="9"> <!--OP-Z-->
       <connection client="OP-Z" port="0" />
     </port>
   </client>
