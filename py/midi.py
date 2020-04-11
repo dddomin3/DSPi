@@ -4,7 +4,7 @@ from mididings.event import *
 
 config(
   client_name='mididings',
-  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'opzIn'],
+  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'quNexusIn'],
   out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut', 'opzOut'],
 )
 
@@ -253,14 +253,23 @@ run(
         CtrlFilter(range(64,80)) >> Process(guitarixDeOffset) >> Ctrl('MFTOut', 1, EVENT_CTRL, EVENT_VALUE),
         CtrlFilter(range(80,95)) >> Process(guitarixShiftDeOffset) >> Ctrl('MFTOut', 5, EVENT_CTRL, EVENT_VALUE),
     ],
-    PortFilter('opzIn') >> [
-      ChannelFilter(10) >> Channel(1) >> Port('opzOut'),
-      ChannelFilter(11) >> Channel(2) >> Port('opzOut'),
-      ChannelFilter(12) >> Channel(3) >> Port('opzOut'),
-      ChannelFilter(13) >> Channel(5) >> Port('opzOut'),
-      ChannelFilter(14) >> Channel(6) >> Port('opzOut'),
-      ChannelFilter(15) >> Channel(7) >> Port('opzOut'),
-      ChannelFilter(16) >> Channel(8) >> Port('opzOut'),
+    PortFilter('quNexusIn') >> [
+      ChannelFilter(1) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(2) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(3) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(4) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(5) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(6) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(7) >> KeyFilter(72,96) >> Port('octatrackOut'),
+      ChannelFilter(8) >> Channel(10) >> KeyFilter(72,96) >> Port('octatrackOut'), # Don't need notes on master track, so set to auto channel
+      ChannelFilter(9) >> Port('amSynthOut'),
+      ChannelFilter(10) >> Channel(1) >> Port('opzOut'), # OP-Z Kick
+      ChannelFilter(11) >> Channel(2) >> Port('opzOut'), # OP-Z Snare
+      ChannelFilter(12) >> Channel(3) >> Port('opzOut'), # OP-Z Hats
+      ChannelFilter(13) >> Channel(5) >> Port('opzOut'), # OP-Z Bass
+      ChannelFilter(14) >> Channel(6) >> Port('opzOut'), # OP-Z Lead
+      ChannelFilter(15) >> Channel(7) >> Port('opzOut'), # OP-Z Arp
+      ChannelFilter(16) >> Channel(8) >> Port('opzOut'), # OP-Z Chords
     ]
   ]
 )

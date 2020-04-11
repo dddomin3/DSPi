@@ -12,9 +12,7 @@
   </client>
   <client name="QuNexus">
     <port id="0">
-      <connection client="amsynth" port="0" />
-      <connection client="pisound" port="0" />=
-      <connection client="mididings" port="4" /> <!--OP-Z-->
+      <connection client="mididings" port="4" /> <!--QuNexus-->
     </port>
     <port id="1" />
     <port id="2" />
@@ -84,5 +82,4 @@
       <connection port="gx_head_amp:midi_in_1" />
     </port>
   </client>
-
 </jack>
