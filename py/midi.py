@@ -164,10 +164,10 @@ run(
         CtrlFilter(24) >> Ctrl('octatrackOut', 3, 46, EVENT_VALUE), CtrlFilter(25) >> Ctrl('octatrackOut', 7, 46, EVENT_VALUE),
         CtrlFilter(28) >> Ctrl('octatrackOut', 4, 46, EVENT_VALUE), CtrlFilter(29) >> Ctrl('octatrackOut', 8, 46, EVENT_VALUE),
 
-        CtrlFilter(18) >> Ctrl('opzOut', 1, 53, EVENT_VALUE), CtrlFilter(19) >> Ctrl('opzOut', 5, 53, EVENT_VALUE),
-        CtrlFilter(22) >> Ctrl('opzOut', 2, 53, EVENT_VALUE), CtrlFilter(23) >> Ctrl('opzOut', 6, 53, EVENT_VALUE),
-        CtrlFilter(26) >> Ctrl('opzOut', 3, 53, EVENT_VALUE), CtrlFilter(27) >> Ctrl('opzOut', 7, 53, EVENT_VALUE),
-        CtrlFilter(30) >> Ctrl('opzOut', 4, 53, EVENT_VALUE), CtrlFilter(31) >> Ctrl('opzOut', 8, 53, EVENT_VALUE),
+        CtrlFilter(18) >> Ctrl('opzOut', 1, 16, EVENT_VALUE), CtrlFilter(19) >> Ctrl('opzOut', 5, 16, EVENT_VALUE),
+        CtrlFilter(22) >> Ctrl('opzOut', 2, 16, EVENT_VALUE), CtrlFilter(23) >> Ctrl('opzOut', 6, 16, EVENT_VALUE),
+        CtrlFilter(26) >> Ctrl('opzOut', 3, 16, EVENT_VALUE), CtrlFilter(27) >> Ctrl('opzOut', 7, 16, EVENT_VALUE),
+        CtrlFilter(30) >> Ctrl('opzOut', 4, 16, EVENT_VALUE), CtrlFilter(31) >> Ctrl('opzOut', 8, 16, EVENT_VALUE),
 
         CtrlFilter(range(48,64)) >> Process(guitarixOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
       ],
@@ -259,11 +259,18 @@ run(
     ],
     PortFilter('opzIn') >> [
       CtrlFilter(16) >> [
-        # Cue Volume
+        # Volume
         ChannelFilter(1) >> Ctrl('MFTOut', 1, 18, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFTOut', 1, 19, EVENT_VALUE),
         ChannelFilter(2) >> Ctrl('MFTOut', 1, 22, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFTOut', 1, 23, EVENT_VALUE),
         ChannelFilter(3) >> Ctrl('MFTOut', 1, 26, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 27, EVENT_VALUE),
         ChannelFilter(4) >> Ctrl('MFTOut', 1, 30, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 31, EVENT_VALUE),
+      ],
+      CtrlFilter(53) >> [
+        # Mutes
+        ChannelFilter(1) >> Process(fixer.mftOpzMuteFix), ChannelFilter(5) >> Process(fixer.mftOpzMuteFix),
+        ChannelFilter(2) >> Process(fixer.mftOpzMuteFix), ChannelFilter(6) >> Process(fixer.mftOpzMuteFix),
+        ChannelFilter(3) >> Process(fixer.mftOpzMuteFix), ChannelFilter(7) >> Process(fixer.mftOpzMuteFix),
+        ChannelFilter(4) >> Process(fixer.mftOpzMuteFix), ChannelFilter(8) >> Process(fixer.mftOpzMuteFix),
       ],
     ],
   ]
