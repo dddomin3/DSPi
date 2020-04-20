@@ -4,8 +4,21 @@ from mididings.event import *
 
 config(
   client_name='mididings',
-  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'quNexusIn', 'opzIn'],
-  out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut', 'opzOut'],
+  in_ports=[
+    'MFTIn',        # 0
+    'amSynthIn',    # 1
+    'octatrackIn',  # 2
+    'guitarixIn',   # 3
+    'quNexusIn',    # 4
+    'opzIn',        # 5
+  ],
+  out_ports=[
+    'MFTOut',       # 6
+    'amSynthOut',   # 7
+    'octatrackOut', # 8
+    'guitarixOut',  # 9
+    'opzOut',       # 10
+  ],
 )
 
 # These functions help map MFT MIDI messages over to other usages.
@@ -32,19 +45,13 @@ def guitarixShiftDeOffset(e):
   return e
 
 class MuteFix:
-  ccToOctaChannel = {
-    16:1, 17:5,
-    20:2, 21:6,
-    24:3, 25:7,
-    28:4, 29:8,
+  mftCcToChannel = {
+    16:1, 17:5, 18:1, 19:5,
+    20:2, 21:6, 22:2, 23:6,
+    24:3, 25:7, 26:3, 27:7,
+    28:4, 29:8, 30:4, 31:8,
   }
   octaChannelToCc = [16, 20, 24, 28, 17, 21, 25, 29]
-  mftCcToOpzChannel = {
-    18:1, 19:5,
-    22:2, 23:6,
-    26:3, 27:7,
-    30:4, 31:8,
-  }
   opzTrackToMftCc = [18, 22, 26, 30, 19, 23, 27, 31]
   offColor = 40
   onColor = 85
@@ -57,7 +64,7 @@ class MuteFix:
 
   @classmethod
   def octaMuteFix(klass, e):
-    octaChannel = klass.ccToOctaChannel[e.ctrl]
+    octaChannel = klass.mftCcToChannel[e.ctrl]
     klass.octaMutes[octaChannel-1] = not klass.octaMutes[octaChannel-1]
 
     mftOut = CtrlEvent(
@@ -99,7 +106,7 @@ class MuteFix:
   
   @classmethod
   def opzMuteFix(klass, e):
-    opzChannel = klass.mftCcToOpzChannel[e.ctrl]
+    opzChannel = klass.mftCcToChannel[e.ctrl]
     klass.opzMutes[opzChannel-1] = not klass.opzMutes[opzChannel-1]
 
     mftOut = CtrlEvent(

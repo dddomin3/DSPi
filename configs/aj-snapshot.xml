@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <alsa>
-  <client name="Midi Through">
-    <port id="0">
-      <connection client="mididings" port="3" /> <!--Guitarix-->
-    </port>
-  </client>
   <client name="Midi Fighter Twister"> <!-- Dirty MFT Signal -->
     <port id="0">
       <connection client="mididings" port="0" /> <!--MFT-->
+    </port>
+  </client>
+  <client name="amsynth">
+    <!--
+      amSynth outputs values out to the MFT (through mididings) on bank/program change
+    -->
+    <port id="1">
+      <connection client="mididings" port="1" /> <!--amSynth-->
+    </port>
+  </client>
+  <client name="pisound"> <!-- Octatrack. DIN world. -->
+    <port id="0">
+      <connection client="mididings" port="2" /><!--Octa-->
+      <connection client="amsynth" port="0" />
+    </port>
+  </client>
+  <client name="Midi Through">
+    <port id="0">
+      <connection client="mididings" port="3" /> <!--Guitarix-->
     </port>
   </client>
   <client name="QuNexus">
@@ -16,12 +30,6 @@
     </port>
     <port id="1" />
     <port id="2" />
-  </client>
-  <client name="pisound"> <!-- Octatrack. DIN world. -->
-    <port id="0">
-      <connection client="mididings" port="2" /><!--Octa-->
-      <connection client="amsynth" port="0" />
-    </port>
   </client>
   <client name="OP-Z">
     <port id="0">
@@ -47,14 +55,6 @@
     </port>
     <port id="10"> <!--OP-Z-->
       <connection client="OP-Z" port="0" />
-    </port>
-  </client>
-  <client name="amsynth">
-    <!--
-      amSynth outputs values out to the MFT (through mididings) on bank/program change
-    -->
-    <port id="1">
-      <connection client="mididings" port="1" /> <!--amSynth-->
     </port>
   </client>
 </alsa>
