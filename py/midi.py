@@ -4,7 +4,7 @@ from mididings.event import *
 
 config(
   client_name='mididings',
-  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'quNexusIn'],
+  in_ports=['MFTIn', 'amSynthIn', 'octatrackIn', 'guitarixIn', 'quNexusIn', 'opzIn'],
   out_ports=['MFTOut', 'amSynthOut', 'octatrackOut', 'guitarixOut', 'opzOut'],
 )
 
@@ -32,118 +32,112 @@ def guitarixShiftDeOffset(e):
   return e
 
 class MuteFix:
-  ccToOctaTrack = {
+  ccToOctaChannel = {
     16:1, 17:5,
     20:2, 21:6,
     24:3, 25:7,
     28:4, 29:8,
   }
-  octaTrackToCc = [16, 20, 24, 28, 17, 21, 25, 29]
-  mftCcToOctaMidiTrack = {
+  octaChannelToCc = [16, 20, 24, 28, 17, 21, 25, 29]
+  mftCcToOpzChannel = {
     18:1, 19:5,
     22:2, 23:6,
     26:3, 27:7,
     30:4, 31:8,
   }
-  octaMidiTrackToMftCc = [18, 22, 26, 30, 19, 23, 27, 31]
-  octaCcToOctaMidiTrack = {
-    112:1, 116:5,
-    113:2, 117:6,
-    114:3, 118:7,
-    115:4, 119:8,
-  }
-  octaMidiTrackToOctaCc = [112, 113, 114, 115, 116, 117, 118, 119]
+  opzTrackToMftCc = [18, 22, 26, 30, 19, 23, 27, 31]
   offColor = 40
   onColor = 85
 
-  volumeMutes = [False, False, False, False, False, False, False, False]
-  midiMutes = [False, False, False, False, False, False, False, False]
+  octaMutes = [False, False, False, False, False, False, False, False]
+  opzMutes = [False, False, False, False, False, False, False, False]
   mftPort = 'MFTOut'
   octaPort = 'octatrackOut'
+  opzPort = 'opzOut'
 
   @classmethod
-  def octaVolumeMuteFix(klass, e):
-    octaTrack = klass.ccToOctaTrack[e.ctrl]
-    klass.volumeMutes[octaTrack-1] = not klass.volumeMutes[octaTrack-1]
+  def octaMuteFix(klass, e):
+    octaChannel = klass.ccToOctaChannel[e.ctrl]
+    klass.octaMutes[octaChannel-1] = not klass.octaMutes[octaChannel-1]
 
     mftOut = CtrlEvent(
       klass.mftPort,
       2,
-      klass.octaTrackToCc[octaTrack-1],
-      klass.onColor if klass.volumeMutes[octaTrack-1] else klass.offColor,
+      klass.octaChannelToCc[octaChannel-1],
+      klass.onColor if klass.octaMutes[octaChannel-1] else klass.offColor,
     )
     octaOut = CtrlEvent(
       klass.octaPort,
-      octaTrack,
+      octaChannel,
       49,
-      klass.volumeMutes[octaTrack-1] * 127,
+      klass.octaMutes[octaChannel-1] * 127,
     )
 
-    print(klass.volumeMutes,klass.midiMutes)
+    print(klass.octaMutes,klass.opzMutes)
     return [mftOut, octaOut]
   
   @classmethod
-  def octaMidiMuteFix(klass, e):
-    octaTrack = klass.mftCcToOctaMidiTrack[e.ctrl]
-    klass.midiMutes[octaTrack-1] = not klass.midiMutes[octaTrack-1]
-
-    mftOut = CtrlEvent(
-      klass.mftPort,
-      2,
-      klass.octaMidiTrackToMftCc[octaTrack-1],
-      klass.onColor if klass.midiMutes[octaTrack-1] else klass.offColor
-    )
-    octaOut = CtrlEvent(
-      klass.octaPort,
-      1,
-      klass.octaMidiTrackToOctaCc[octaTrack-1],
-      int(klass.midiMutes[octaTrack-1]) * 127
-    )
-
-    print(klass.volumeMutes,klass.midiMutes)
-    return [mftOut, octaOut]
-  
-  @classmethod
-  def mftVolumeMuteFix(klass, e):
+  def mftOctaMuteFix(klass, e):
     octaTrack = e.channel
-    klass.volumeMutes[octaTrack-1] = not klass.volumeMutes[octaTrack-1]
+    klass.octaMutes[octaTrack-1] = not klass.octaMutes[octaTrack-1]
 
     mftOut = CtrlEvent(
       klass.mftPort,
       2,
-      klass.octaTrackToCc[octaTrack-1],
-      klass.onColor if klass.volumeMutes[e.channel-1] else klass.offColor,
+      klass.octaChannelToCc[octaTrack-1],
+      klass.onColor if klass.octaMutes[e.channel-1] else klass.offColor,
     )
     octaOut = CtrlEvent(
       klass.octaPort,
       octaTrack,
       49,
-      klass.volumeMutes[octaTrack-1] * 127,
+      klass.octaMutes[octaTrack-1] * 127,
     )
 
-    print(klass.volumeMutes,klass.midiMutes)
+    print(klass.octaMutes,klass.opzMutes)
     return [mftOut, octaOut]
   
   @classmethod
-  def mftMidiMuteFix(klass, e):
-    octaTrack = klass.octaCcToOctaMidiTrack[e.ctrl]
-    klass.midiMutes[octaTrack-1] = not klass.midiMutes[octaTrack-1]
+  def opzMuteFix(klass, e):
+    opzChannel = klass.mftCcToOpzChannel[e.ctrl]
+    klass.opzMutes[opzChannel-1] = not klass.opzMutes[opzChannel-1]
 
     mftOut = CtrlEvent(
       klass.mftPort,
       2,
-      klass.octaMidiTrackToMftCc[octaTrack-1],
-      klass.onColor if klass.midiMutes[octaTrack-1] else klass.offColor
+      klass.opzTrackToMftCc[opzChannel-1],
+      klass.onColor if klass.opzMutes[opzChannel-1] else klass.offColor
     )
-    octaOut = CtrlEvent(
-      klass.octaPort,
-      1,
-      klass.octaMidiTrackToOctaCc[octaTrack-1],
-      int(klass.midiMutes[octaTrack-1]) * 127
+    opzOut = CtrlEvent(
+      klass.opzPort,
+      opzChannel,
+      53, # CC for opz mute
+      int(klass.opzMutes[opzChannel-1])
     )
 
-    print(klass.volumeMutes,klass.midiMutes)
-    return [mftOut, octaOut]
+    print(klass.octaMutes,klass.opzMutes)
+    return [mftOut, opzOut]
+  
+  @classmethod
+  def mftOpzMuteFix(klass, e):
+    opzChannel = e.channel
+    klass.opzMutes[opzChannel-1] = not klass.opzMutes[opzChannel-1]
+
+    mftOut = CtrlEvent(
+      klass.mftPort,
+      2,
+      klass.opzTrackToMftCc[opzChannel-1],
+      klass.onColor if klass.opzMutes[opzChannel-1] else klass.offColor
+    )
+    opzOut = CtrlEvent(
+      klass.opzPort,
+      opzChannel,
+      53, # CC for opz mute
+      int(klass.opzMutes[opzChannel-1])
+    )
+
+    print(klass.octaMutes,klass.opzMutes)
+    return [mftOut, opzOut]
 
 fixer = MuteFix()
 
@@ -171,16 +165,15 @@ run(
         CtrlFilter(range(48,64)) >> Process(guitarixOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
       ],
       ChannelFilter(2) >> [ #MFT Switches Outward
-        # TODO: implement switch fix...
-        CtrlFilter(16) >> Process(fixer.octaVolumeMuteFix), CtrlFilter(17) >> Process(fixer.octaVolumeMuteFix),
-        CtrlFilter(20) >> Process(fixer.octaVolumeMuteFix), CtrlFilter(21) >> Process(fixer.octaVolumeMuteFix),
-        CtrlFilter(24) >> Process(fixer.octaVolumeMuteFix), CtrlFilter(25) >> Process(fixer.octaVolumeMuteFix),
-        CtrlFilter(28) >> Process(fixer.octaVolumeMuteFix), CtrlFilter(29) >> Process(fixer.octaVolumeMuteFix),
+        CtrlFilter(16) >> Process(fixer.octaMuteFix), CtrlFilter(17) >> Process(fixer.octaMuteFix),
+        CtrlFilter(20) >> Process(fixer.octaMuteFix), CtrlFilter(21) >> Process(fixer.octaMuteFix),
+        CtrlFilter(24) >> Process(fixer.octaMuteFix), CtrlFilter(25) >> Process(fixer.octaMuteFix),
+        CtrlFilter(28) >> Process(fixer.octaMuteFix), CtrlFilter(29) >> Process(fixer.octaMuteFix),
 
-        CtrlFilter(18) >> Process(fixer.octaMidiMuteFix), CtrlFilter(19) >> Process(fixer.octaMidiMuteFix),
-        CtrlFilter(22) >> Process(fixer.octaMidiMuteFix), CtrlFilter(23) >> Process(fixer.octaMidiMuteFix),
-        CtrlFilter(26) >> Process(fixer.octaMidiMuteFix), CtrlFilter(27) >> Process(fixer.octaMidiMuteFix),
-        CtrlFilter(30) >> Process(fixer.octaMidiMuteFix), CtrlFilter(31) >> Process(fixer.octaMidiMuteFix),
+        CtrlFilter(18) >> Process(fixer.opzMuteFix), CtrlFilter(19) >> Process(fixer.opzMuteFix),
+        CtrlFilter(22) >> Process(fixer.opzMuteFix), CtrlFilter(23) >> Process(fixer.opzMuteFix),
+        CtrlFilter(26) >> Process(fixer.opzMuteFix), CtrlFilter(27) >> Process(fixer.opzMuteFix),
+        CtrlFilter(30) >> Process(fixer.opzMuteFix), CtrlFilter(31) >> Process(fixer.opzMuteFix),
       ],
       ChannelFilter(5) >> [ #Shifted MFT Outward
         CtrlFilter(range(0,12)) >> Process(amSynthOffset) >> Ctrl('amSynthOut', 9, EVENT_CTRL, EVENT_VALUE),
@@ -219,19 +212,12 @@ run(
       CtrlFilter(range(77,79)) >> Process(amSynthDeOffset) >> Ctrl('MFTOut', 9, EVENT_CTRL, EVENT_VALUE),
     ],
     PortFilter('octatrackIn') >> [
-      ChannelFilter(1) >> [ #MFT Inward
-        # MIDI Mutes
-        CtrlFilter(112) >> Process(fixer.mftMidiMuteFix), CtrlFilter(116) >> Process(fixer.mftMidiMuteFix),
-        CtrlFilter(113) >> Process(fixer.mftMidiMuteFix), CtrlFilter(117) >> Process(fixer.mftMidiMuteFix),
-        CtrlFilter(114) >> Process(fixer.mftMidiMuteFix), CtrlFilter(118) >> Process(fixer.mftMidiMuteFix),
-        CtrlFilter(115) >> Process(fixer.mftMidiMuteFix), CtrlFilter(119) >> Process(fixer.mftMidiMuteFix),
-      ],
       CtrlFilter(49) >> [
         # Mutes
-        ChannelFilter(1) >> Process(fixer.mftVolumeMuteFix), ChannelFilter(5) >> Process(fixer.mftVolumeMuteFix),
-        ChannelFilter(2) >> Process(fixer.mftVolumeMuteFix), ChannelFilter(6) >> Process(fixer.mftVolumeMuteFix),
-        ChannelFilter(3) >> Process(fixer.mftVolumeMuteFix), ChannelFilter(7) >> Process(fixer.mftVolumeMuteFix),
-        ChannelFilter(4) >> Process(fixer.mftVolumeMuteFix), ChannelFilter(8) >> Process(fixer.mftVolumeMuteFix),
+        ChannelFilter(1) >> Process(fixer.mftOctaMuteFix), ChannelFilter(5) >> Process(fixer.mftOctaMuteFix),
+        ChannelFilter(2) >> Process(fixer.mftOctaMuteFix), ChannelFilter(6) >> Process(fixer.mftOctaMuteFix),
+        ChannelFilter(3) >> Process(fixer.mftOctaMuteFix), ChannelFilter(7) >> Process(fixer.mftOctaMuteFix),
+        ChannelFilter(4) >> Process(fixer.mftOctaMuteFix), ChannelFilter(8) >> Process(fixer.mftOctaMuteFix),
       ],
       CtrlFilter(46) >> [
         # Volume
@@ -239,13 +225,6 @@ run(
         ChannelFilter(2) >> Ctrl('MFTOut', 1, 20, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFTOut', 1, 21, EVENT_VALUE),
         ChannelFilter(3) >> Ctrl('MFTOut', 1, 24, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 25, EVENT_VALUE),
         ChannelFilter(4) >> Ctrl('MFTOut', 1, 28, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 29, EVENT_VALUE),
-      ],
-      CtrlFilter(47) >> [
-        # Cue Volume
-        ChannelFilter(1) >> Ctrl('MFTOut', 1, 18, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFTOut', 1, 19, EVENT_VALUE),
-        ChannelFilter(2) >> Ctrl('MFTOut', 1, 22, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFTOut', 1, 23, EVENT_VALUE),
-        ChannelFilter(3) >> Ctrl('MFTOut', 1, 26, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 27, EVENT_VALUE),
-        ChannelFilter(4) >> Ctrl('MFTOut', 1, 30, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 31, EVENT_VALUE),
       ],
       Filter(SYSRT) >> Port('opzOut')
     ],
@@ -270,6 +249,15 @@ run(
       ChannelFilter(14) >> Channel(6) >> Port('opzOut'), # OP-Z Lead
       ChannelFilter(15) >> Channel(7) >> Port('opzOut'), # OP-Z Arp
       ChannelFilter(16) >> Channel(8) >> Port('opzOut'), # OP-Z Chords
-    ]
+    ],
+    PortFilter('opzIn') >> [
+      CtrlFilter(16) >> [
+        # Cue Volume
+        ChannelFilter(1) >> Ctrl('MFTOut', 1, 18, EVENT_VALUE), ChannelFilter(5) >> Ctrl('MFTOut', 1, 19, EVENT_VALUE),
+        ChannelFilter(2) >> Ctrl('MFTOut', 1, 22, EVENT_VALUE), ChannelFilter(6) >> Ctrl('MFTOut', 1, 23, EVENT_VALUE),
+        ChannelFilter(3) >> Ctrl('MFTOut', 1, 26, EVENT_VALUE), ChannelFilter(7) >> Ctrl('MFTOut', 1, 27, EVENT_VALUE),
+        ChannelFilter(4) >> Ctrl('MFTOut', 1, 30, EVENT_VALUE), ChannelFilter(8) >> Ctrl('MFTOut', 1, 31, EVENT_VALUE),
+      ],
+    ],
   ]
 )
