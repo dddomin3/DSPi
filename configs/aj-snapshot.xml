@@ -23,26 +23,30 @@
       <connection client="amsynth" port="0" />
     </port>
   </client>
+  <client name="OP-Z">
+    <port id="0">
+      <connection client="mididings" port="5" /> <!--OP-Z-->
+    </port>
+  </client>
   <client name="mididings">
     <!--
       mididings translates weird values from MIDI Fighter into useable values.
       Leaving Defaults on MFT so we get Full Duplex support
     -->
-    <port id="5"> <!--MFT-->
+    <port id="6"> <!--MFT-->
       <connection client="Midi Fighter Twister" port="0" />  <!-- Full Duplex right hurr -->
     </port>
-    <port id="6"> <!--amSynth-->
+    <port id="7"> <!--amSynth-->
       <connection client="amsynth" port="0" />
     </port>
-    <port id="7"> <!--Octa-->
+    <port id="8"> <!--Octa-->
       <connection client="pisound" port="0" />
     </port>
-    <port id="8"> <!--Guitarix-->
+    <port id="9"> <!--Guitarix-->
       <connection client="Midi Through" port="0" />
     </port>
-    <port id="9"> <!--OP-Z-->
+    <port id="10"> <!--OP-Z-->
       <connection client="OP-Z" port="0" />
-      <connection client="OP-Z" port="1" />
     </port>
   </client>
   <client name="amsynth">
