@@ -157,10 +157,10 @@ run(
         CtrlFilter(24) >> Ctrl('octatrackOut', 3, 46, EVENT_VALUE), CtrlFilter(25) >> Ctrl('octatrackOut', 7, 46, EVENT_VALUE),
         CtrlFilter(28) >> Ctrl('octatrackOut', 4, 46, EVENT_VALUE), CtrlFilter(29) >> Ctrl('octatrackOut', 8, 46, EVENT_VALUE),
 
-        CtrlFilter(18) >> Ctrl('octatrackOut', 1, 47, EVENT_VALUE), CtrlFilter(19) >> Ctrl('octatrackOut', 5, 47, EVENT_VALUE),
-        CtrlFilter(22) >> Ctrl('octatrackOut', 2, 47, EVENT_VALUE), CtrlFilter(23) >> Ctrl('octatrackOut', 6, 47, EVENT_VALUE),
-        CtrlFilter(26) >> Ctrl('octatrackOut', 3, 47, EVENT_VALUE), CtrlFilter(27) >> Ctrl('octatrackOut', 7, 47, EVENT_VALUE),
-        CtrlFilter(30) >> Ctrl('octatrackOut', 4, 47, EVENT_VALUE), CtrlFilter(31) >> Ctrl('octatrackOut', 8, 47, EVENT_VALUE),
+        CtrlFilter(18) >> Ctrl('opzOut', 1, 53, EVENT_VALUE), CtrlFilter(19) >> Ctrl('opzOut', 5, 53, EVENT_VALUE),
+        CtrlFilter(22) >> Ctrl('opzOut', 2, 53, EVENT_VALUE), CtrlFilter(23) >> Ctrl('opzOut', 6, 53, EVENT_VALUE),
+        CtrlFilter(26) >> Ctrl('opzOut', 3, 53, EVENT_VALUE), CtrlFilter(27) >> Ctrl('opzOut', 7, 53, EVENT_VALUE),
+        CtrlFilter(30) >> Ctrl('opzOut', 4, 53, EVENT_VALUE), CtrlFilter(31) >> Ctrl('opzOut', 8, 53, EVENT_VALUE),
 
         CtrlFilter(range(48,64)) >> Process(guitarixOffset) >> Ctrl('guitarixOut', 11, EVENT_CTRL, EVENT_VALUE),
       ],
